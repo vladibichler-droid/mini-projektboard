@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini-Projektboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="app">
+
+    <header class="kopfbereich">
+      <p class="label">Mini-Projekt abgeschlossen</p>
+
+      <h1>Mein Projektboard</h1>
+
+      <p class="beschreibung">
+        Ein kleines Board, um Aufgaben in drei Bereiche zu sortieren:
+        offen, in Arbeit und fertig.
+      </p>
+
+      <form class="eingabe-bereich" id="aufgabenFormular">
+        <input
+          type="text"
+          id="aufgabenEingabe"
+          placeholder="Neue Aufgabe eingeben ..."
+          autocomplete="off"
+        >
+
+        <button type="submit">
+          Aufgabe hinzufügen
+        </button>
+      </form>
+
+      <div class="steuerung-bereich">
+        <button class="sekundaer-button" id="zuruecksetzenButton" type="button">
+          Beispiel-Aufgaben zurücksetzen
+        </button>
+      </div>
+
+      <section class="uebersicht">
+        <div class="uebersicht-karte">
+          <span class="uebersicht-zahl" id="gesamtZaehler">0</span>
+          <span class="uebersicht-text">Gesamt</span>
+        </div>
+
+        <div class="uebersicht-karte">
+          <span class="uebersicht-zahl" id="offenUebersicht">0</span>
+          <span class="uebersicht-text">Offen</span>
+        </div>
+
+        <div class="uebersicht-karte">
+          <span class="uebersicht-zahl" id="arbeitUebersicht">0</span>
+          <span class="uebersicht-text">In Arbeit</span>
+        </div>
+
+        <div class="uebersicht-karte">
+          <span class="uebersicht-zahl" id="fertigUebersicht">0</span>
+          <span class="uebersicht-text">Fertig</span>
+        </div>
+      </section>
+    </header>
+
+    <section class="board">
+
+      <article class="spalte">
+        <div class="spalten-kopf">
+          <h2>Offen</h2>
+          <span id="offenZaehler">0</span>
+        </div>
+
+        <div class="karten-liste" id="offenListe"></div>
+      </article>
+
+      <article class="spalte">
+        <div class="spalten-kopf">
+          <h2>In Arbeit</h2>
+          <span id="arbeitZaehler">0</span>
+        </div>
+
+        <div class="karten-liste" id="arbeitListe"></div>
+      </article>
+
+      <article class="spalte">
+        <div class="spalten-kopf">
+          <h2>Fertig</h2>
+          <span id="fertigZaehler">0</span>
+        </div>
+
+        <div class="karten-liste" id="fertigListe"></div>
+      </article>
+
+    </section>
+
+    <footer class="abschluss-box">
+      <p>Version 5 von 5 · Mini-Projektboard fertig</p>
+    </footer>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
