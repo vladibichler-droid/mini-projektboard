@@ -16,15 +16,15 @@
       <h1>Mein Projektboard</h1>
 
       <p class="beschreibung">
-        Ein kleines Board, um Aufgaben in vier Bereiche zu sortieren:
-        offen, in Arbeit, fertig und Archiv.
+        Ein modernes Mini-Board, um Projekte übersichtlich zu planen,
+        Fortschritte zu verfolgen und Aufgaben sauber zu organisieren.
       </p>
 
       <form class="eingabe-bereich" id="aufgabenFormular">
         <input
           type="text"
           id="aufgabenEingabe"
-          placeholder="Neue Aufgabe eingeben ..."
+          placeholder="Neues Projekt oder neue Aufgabe eingeben ..."
           autocomplete="off"
         >
 
@@ -63,6 +63,15 @@
         <div class="uebersicht-karte">
           <span class="uebersicht-zahl" id="archivUebersicht">0</span>
           <span class="uebersicht-text">Archiv</span>
+        </div>
+
+        <div class="uebersicht-karte uebersicht-karte-breit">
+          <span class="uebersicht-zahl" id="fortschrittUebersicht">0 %</span>
+          <span class="uebersicht-text">Durchschnittlicher Fortschritt</span>
+
+          <div class="uebersicht-fortschritt">
+            <div class="uebersicht-fortschritt-fuellung" id="fortschrittUebersichtBalken"></div>
+          </div>
         </div>
       </section>
     </header>
@@ -108,7 +117,7 @@
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 6 · Archiv-Spalte hinzugefügt</p>
+      <p>Version 8 · Individuelle Fortschrittssteuerung hinzugefügt</p>
     </footer>
 
   </main>
