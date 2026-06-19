@@ -11,13 +11,13 @@
   <main class="app">
 
     <header class="kopfbereich">
-      <p class="label">Mini-Projekt abgeschlossen</p>
+      <p class="label">Mini-Projekt erweitert</p>
 
       <h1>Mein Projektboard</h1>
 
       <p class="beschreibung">
-        Ein kleines Board, um Aufgaben in drei Bereiche zu sortieren:
-        offen, in Arbeit und fertig.
+        Ein kleines Board, um Aufgaben in vier Bereiche zu sortieren:
+        offen, in Arbeit, fertig und Archiv.
       </p>
 
       <form class="eingabe-bereich" id="aufgabenFormular">
@@ -59,12 +59,17 @@
           <span class="uebersicht-zahl" id="fertigUebersicht">0</span>
           <span class="uebersicht-text">Fertig</span>
         </div>
+
+        <div class="uebersicht-karte">
+          <span class="uebersicht-zahl" id="archivUebersicht">0</span>
+          <span class="uebersicht-text">Archiv</span>
+        </div>
       </section>
     </header>
 
     <section class="board">
 
-      <article class="spalte">
+      <article class="spalte spalte-offen">
         <div class="spalten-kopf">
           <h2>Offen</h2>
           <span id="offenZaehler">0</span>
@@ -73,7 +78,7 @@
         <div class="karten-liste" id="offenListe"></div>
       </article>
 
-      <article class="spalte">
+      <article class="spalte spalte-arbeit">
         <div class="spalten-kopf">
           <h2>In Arbeit</h2>
           <span id="arbeitZaehler">0</span>
@@ -82,7 +87,7 @@
         <div class="karten-liste" id="arbeitListe"></div>
       </article>
 
-      <article class="spalte">
+      <article class="spalte spalte-fertig">
         <div class="spalten-kopf">
           <h2>Fertig</h2>
           <span id="fertigZaehler">0</span>
@@ -91,10 +96,19 @@
         <div class="karten-liste" id="fertigListe"></div>
       </article>
 
+      <article class="spalte spalte-archiv">
+        <div class="spalten-kopf">
+          <h2>Archiv</h2>
+          <span id="archivZaehler">0</span>
+        </div>
+
+        <div class="karten-liste" id="archivListe"></div>
+      </article>
+
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 5 von 5 · Mini-Projektboard fertig</p>
+      <p>Version 6 · Archiv-Spalte hinzugefügt</p>
     </footer>
 
   </main>
