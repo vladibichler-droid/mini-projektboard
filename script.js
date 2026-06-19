@@ -1,5 +1,6 @@
 const aufgabenFormular = document.querySelector("#aufgabenFormular");
 const aufgabenEingabe = document.querySelector("#aufgabenEingabe");
+const sucheEingabe = document.querySelector("#sucheEingabe");
 const zuruecksetzenButton = document.querySelector("#zuruecksetzenButton");
 
 const offenListe = document.querySelector("#offenListe");
@@ -89,6 +90,10 @@ aufgabenFormular.addEventListener("submit", function (event) {
   boardAnzeigen();
 });
 
+sucheEingabe.addEventListener("input", function () {
+  boardAnzeigen();
+});
+
 zuruecksetzenButton.addEventListener("click", function () {
   const bestaetigung = confirm("Möchtest du wirklich wieder die Beispiel-Aufgaben laden?");
 
@@ -108,7 +113,9 @@ function boardAnzeigen() {
   fertigListe.innerHTML = "";
   archivListe.innerHTML = "";
 
-  aufgaben.forEach(function (aufgabe) {
+  const sichtbareAufgaben = gefilterteAufgabenErmitteln();
+
+  sichtbareAufgaben.forEach(function (aufgabe) {
     const karte = aufgabenkarteErstellen(aufgabe);
 
     if (aufgabe.status === "offen") {
@@ -129,7 +136,27 @@ function boardAnzeigen() {
   });
 
   leereSpaltenPruefen();
-  zaehlerAktualisieren();
+  zaehlerAktualisieren(sichtbareAufgaben);
+}
+
+function gefilterteAufgabenErmitteln() {
+  const suchbegriff = sucheEingabe.value.trim().toLowerCase();
+
+  if (suchbegriff === "") {
+    return aufgaben;
+  }
+
+  return aufgaben.filter(function (aufgabe) {
+    const text = aufgabe.text.toLowerCase();
+    const status = statusTexte[aufgabe.status].toLowerCase();
+    const datum = aufgabe.erstelltAm.toLowerCase();
+
+    return (
+      text.includes(suchbegriff) ||
+      status.includes(suchbegriff) ||
+      datum.includes(suchbegriff)
+    );
+  });
 }
 
 function aufgabenkarteErstellen(aufgabe) {
@@ -293,10 +320,6 @@ function verschiebeButtonErstellen(text, aufgabenId, neuerStatus) {
       if (aufgabe.id === aufgabenId) {
         aufgabe.status = neuerStatus;
 
-        if (neuerStatus === "offen" && aufgabe.fortschritt === 0) {
-          aufgabe.fortschritt = 0;
-        }
-
         if (neuerStatus === "arbeit" && aufgabe.fortschritt === 0) {
           aufgabe.fortschritt = 5;
         }
@@ -338,10 +361,12 @@ function loeschenButtonErstellen(aufgabenId) {
 }
 
 function leereSpaltenPruefen() {
-  leerenHinweisAnzeigen(offenListe, "Keine offenen Aufgaben.");
-  leerenHinweisAnzeigen(arbeitListe, "Keine Aufgaben in Arbeit.");
-  leerenHinweisAnzeigen(fertigListe, "Keine fertigen Aufgaben.");
-  leerenHinweisAnzeigen(archivListe, "Keine archivierten Aufgaben.");
+  const suchbegriff = sucheEingabe.value.trim();
+
+  leerenHinweisAnzeigen(offenListe, suchbegriff ? "Keine offenen Treffer." : "Keine offenen Aufgaben.");
+  leerenHinweisAnzeigen(arbeitListe, suchbegriff ? "Keine Treffer in Arbeit." : "Keine Aufgaben in Arbeit.");
+  leerenHinweisAnzeigen(fertigListe, suchbegriff ? "Keine fertigen Treffer." : "Keine fertigen Aufgaben.");
+  leerenHinweisAnzeigen(archivListe, suchbegriff ? "Keine archivierten Treffer." : "Keine archivierten Aufgaben.");
 }
 
 function leerenHinweisAnzeigen(liste, text) {
@@ -356,25 +381,25 @@ function leerenHinweisAnzeigen(liste, text) {
   liste.appendChild(hinweis);
 }
 
-function zaehlerAktualisieren() {
-  const offenAnzahl = aufgaben.filter(function (aufgabe) {
+function zaehlerAktualisieren(sichtbareAufgaben) {
+  const offenAnzahl = sichtbareAufgaben.filter(function (aufgabe) {
     return aufgabe.status === "offen";
   }).length;
 
-  const arbeitAnzahl = aufgaben.filter(function (aufgabe) {
+  const arbeitAnzahl = sichtbareAufgaben.filter(function (aufgabe) {
     return aufgabe.status === "arbeit";
   }).length;
 
-  const fertigAnzahl = aufgaben.filter(function (aufgabe) {
+  const fertigAnzahl = sichtbareAufgaben.filter(function (aufgabe) {
     return aufgabe.status === "fertig";
   }).length;
 
-  const archivAnzahl = aufgaben.filter(function (aufgabe) {
+  const archivAnzahl = sichtbareAufgaben.filter(function (aufgabe) {
     return aufgabe.status === "archiv";
   }).length;
 
-  const gesamtAnzahl = aufgaben.length;
-  const durchschnitt = durchschnittlichenFortschrittBerechnen();
+  const gesamtAnzahl = sichtbareAufgaben.length;
+  const durchschnitt = durchschnittlichenFortschrittBerechnen(sichtbareAufgaben);
 
   offenZaehler.textContent = offenAnzahl;
   arbeitZaehler.textContent = arbeitAnzahl;
@@ -391,16 +416,16 @@ function zaehlerAktualisieren() {
   fortschrittUebersichtBalken.style.width = `${durchschnitt}%`;
 }
 
-function durchschnittlichenFortschrittBerechnen() {
-  if (aufgaben.length === 0) {
+function durchschnittlichenFortschrittBerechnen(aufgabenListe) {
+  if (aufgabenListe.length === 0) {
     return 0;
   }
 
-  const summe = aufgaben.reduce(function (gesamt, aufgabe) {
+  const summe = aufgabenListe.reduce(function (gesamt, aufgabe) {
     return gesamt + aufgabe.fortschritt;
   }, 0);
 
-  return Math.round(summe / aufgaben.length);
+  return Math.round(summe / aufgabenListe.length);
 }
 
 function aufgabenSpeichern() {

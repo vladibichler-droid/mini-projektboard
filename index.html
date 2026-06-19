@@ -33,6 +33,15 @@
         </button>
       </form>
 
+      <div class="suchbereich">
+        <input
+          type="search"
+          id="sucheEingabe"
+          placeholder="Projekte oder Aufgaben suchen ..."
+          autocomplete="off"
+        >
+      </div>
+
       <div class="steuerung-bereich">
         <button class="sekundaer-button" id="zuruecksetzenButton" type="button">
           Beispiel-Aufgaben zurücksetzen
@@ -42,7 +51,7 @@
       <section class="uebersicht">
         <div class="uebersicht-karte">
           <span class="uebersicht-zahl" id="gesamtZaehler">0</span>
-          <span class="uebersicht-text">Gesamt</span>
+          <span class="uebersicht-text">Gesamt sichtbar</span>
         </div>
 
         <div class="uebersicht-karte">
@@ -67,7 +76,7 @@
 
         <div class="uebersicht-karte uebersicht-karte-breit">
           <span class="uebersicht-zahl" id="fortschrittUebersicht">0 %</span>
-          <span class="uebersicht-text">Durchschnittlicher Fortschritt</span>
+          <span class="uebersicht-text">Durchschnittlicher Fortschritt der sichtbaren Aufgaben</span>
 
           <div class="uebersicht-fortschritt">
             <div class="uebersicht-fortschritt-fuellung" id="fortschrittUebersichtBalken"></div>
@@ -117,7 +126,7 @@
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 8 · Individuelle Fortschrittssteuerung hinzugefügt</p>
+      <p>Version 9 · Live-Suche hinzugefügt</p>
     </footer>
 
   </main>
