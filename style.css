@@ -116,10 +116,10 @@ h1 {
 }
 
 .uebersicht {
-  max-width: 700px;
+  max-width: 860px;
   margin-top: 18px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
 }
 
@@ -145,10 +145,10 @@ h1 {
 }
 
 .board {
-  max-width: 1100px;
+  max-width: 1350px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 22px;
 }
 
@@ -159,6 +159,22 @@ h1 {
   padding: 18px;
   min-height: 380px;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+}
+
+.spalte-offen {
+  border-color: rgba(147, 197, 253, 0.24);
+}
+
+.spalte-arbeit {
+  border-color: rgba(250, 204, 21, 0.24);
+}
+
+.spalte-fertig {
+  border-color: rgba(74, 222, 128, 0.24);
+}
+
+.spalte-archiv {
+  border-color: rgba(203, 213, 225, 0.24);
 }
 
 .spalten-kopf {
@@ -205,6 +221,21 @@ h1 {
   margin-bottom: 14px;
 }
 
+.status-zeile {
+  margin-bottom: 10px;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.8);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  font-size: 12px;
+  font-weight: bold;
+}
+
 .karten-aktionen {
   display: flex;
   flex-wrap: wrap;
@@ -227,6 +258,16 @@ h1 {
   background: rgba(59, 130, 246, 0.32);
 }
 
+.karten-aktionen .archiv-button {
+  background: rgba(148, 163, 184, 0.14);
+  color: #e2e8f0;
+  border: 1px solid rgba(203, 213, 225, 0.24);
+}
+
+.karten-aktionen .archiv-button:hover {
+  background: rgba(148, 163, 184, 0.26);
+}
+
 .karten-aktionen .loeschen-button {
   background: rgba(239, 68, 68, 0.14);
   color: #fecaca;
@@ -235,6 +276,15 @@ h1 {
 
 .karten-aktionen .loeschen-button:hover {
   background: rgba(239, 68, 68, 0.28);
+}
+
+.leer-hinweis {
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px dashed rgba(148, 163, 184, 0.24);
+  color: #94a3b8;
+  font-size: 14px;
+  text-align: center;
 }
 
 .abschluss-box {
@@ -251,6 +301,16 @@ h1 {
 
 .abschluss-box p {
   margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .board {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .uebersicht {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 850px) {
