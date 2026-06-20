@@ -141,6 +141,10 @@ const ringFertigText = document.querySelector("#ringFertigText");
 const ringOffen = document.querySelector("#ringOffen");
 const ringOffenText = document.querySelector("#ringOffenText");
 
+const wissensdatenbankText = document.querySelector("#wissensdatenbankText");
+const wissensdatenbankSpeichern = document.querySelector("#wissensdatenbankSpeichern");
+const wissensdatenbankSpeicherName = "miniProjektboardWissensdatenbank";
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -1065,6 +1069,7 @@ function neueIdErstellen() {
 aktivenWorkspaceLaden();
 aktivitaetenLaden();
 aufgabenLaden();
+wissensdatenbankLaden();
 kompaktModusLaden();
 workspaceAnzeigeAktualisieren();
 dragUndDropEinrichten();
@@ -2530,3 +2535,23 @@ function ringSetzen(element, textElement, prozent) {
   element.style.background = `conic-gradient(#22d3ee ${grad}deg, rgba(15, 23, 42, 0.85) ${grad}deg)`;
   textElement.textContent = `${prozent} %`;
 }
+
+
+function wissensdatenbankLaden() {
+  const gespeicherterText = localStorage.getItem(wissensdatenbankSpeicherName);
+
+  if (gespeicherterText !== null) {
+    wissensdatenbankText.value = gespeicherterText;
+  }
+}
+
+wissensdatenbankSpeichern.addEventListener("click", function () {
+  localStorage.setItem(wissensdatenbankSpeicherName, wissensdatenbankText.value);
+
+  aktivitaetHinzufuegen(
+    "Wissensdatenbank gespeichert",
+    "Die globale Wissensdatenbank wurde aktualisiert."
+  );
+
+  aktivitaetenAnzeigen();
+});
