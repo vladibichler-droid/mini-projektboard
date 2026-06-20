@@ -2533,3 +2533,75 @@ textarea:focus-visible {
     grid-template-columns: 1fr;
   }
 }
+
+/* Version 34 – Kleine Statistikkarten */
+
+.mini-stats-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.mini-stats-kopf {
+  margin-bottom: 10px;
+}
+
+.mini-stats-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.mini-stats-kopf strong {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.mini-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+
+.mini-stats-karte {
+  padding: 10px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.mini-stats-karte span {
+  display: block;
+  margin-bottom: 6px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.mini-stats-karte strong {
+  display: block;
+  color: #f8fafc;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+@media (max-width: 1100px) {
+  .mini-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .mini-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

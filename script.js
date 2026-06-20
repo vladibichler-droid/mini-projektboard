@@ -119,6 +119,13 @@ const wochenTageElemente = {
   sonntag: document.querySelector("#sonntag")
 };
 
+const statHeute = document.querySelector("#statHeute");
+const statChecklisten = document.querySelector("#statChecklisten");
+const statMeilensteine = document.querySelector("#statMeilensteine");
+const statTimer = document.querySelector("#statTimer");
+const statLinks = document.querySelector("#statLinks");
+const statTeam = document.querySelector("#statTeam");
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -266,6 +273,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   miniChartsAktualisieren();
   historyAnzeigen();
   wochenplanAnzeigen();
+  miniStatistikenAktualisieren();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -279,6 +287,7 @@ kalenderHeuteButton.addEventListener("click", function () {
   miniChartsAktualisieren();
   historyAnzeigen();
   wochenplanAnzeigen();
+  miniStatistikenAktualisieren();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
@@ -291,6 +300,7 @@ kalenderWeiterButton.addEventListener("click", function () {
   miniChartsAktualisieren();
   historyAnzeigen();
   wochenplanAnzeigen();
+  miniStatistikenAktualisieren();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1816,6 +1826,7 @@ aktivitaetLeerenButton.addEventListener("click", function () {
   miniChartsAktualisieren();
   historyAnzeigen();
   wochenplanAnzeigen();
+  miniStatistikenAktualisieren();
 });
 
 
@@ -2359,4 +2370,56 @@ function wochenplanAnzeigen() {
 
 function tagNameFormatieren(tag) {
   return tag.charAt(0).toUpperCase() + tag.slice(1);
+}
+
+
+function miniStatistikenAktualisieren() {
+  const heute = heutigesDatumErstellen();
+
+  const workspaceAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace;
+  });
+
+  const heuteErstellt = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.erstelltAm === heute;
+  }).length;
+
+  const offeneChecklisten = workspaceAufgaben.reduce(function (gesamt, aufgabe) {
+    if (!Array.isArray(aufgabe.checkliste)) {
+      return gesamt;
+    }
+
+    return gesamt + aufgabe.checkliste.filter(function (punkt) {
+      return !punkt.erledigt;
+    }).length;
+  }, 0);
+
+  const offeneMeilensteine = workspaceAufgaben.reduce(function (gesamt, aufgabe) {
+    if (!Array.isArray(aufgabe.meilensteine)) {
+      return gesamt;
+    }
+
+    return gesamt + aufgabe.meilensteine.filter(function (punkt) {
+      return !punkt.erledigt;
+    }).length;
+  }, 0);
+
+  const aktiveTimer = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.zeitStart;
+  }).length;
+
+  const links = workspaceAufgaben.reduce(function (gesamt, aufgabe) {
+    return gesamt + (Array.isArray(aufgabe.links) ? aufgabe.links.length : 0);
+  }, 0);
+
+  const team = workspaceAufgaben.reduce(function (gesamt, aufgabe) {
+    return gesamt + (Array.isArray(aufgabe.team) ? aufgabe.team.length : 0);
+  }, 0);
+
+  statHeute.textContent = heuteErstellt;
+  statChecklisten.textContent = offeneChecklisten;
+  statMeilensteine.textContent = offeneMeilensteine;
+  statTimer.textContent = aktiveTimer;
+  statLinks.textContent = links;
+  statTeam.textContent = team;
 }
