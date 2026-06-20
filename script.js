@@ -76,15 +76,21 @@ const benachrichtigungTitel = document.querySelector("#benachrichtigungTitel");
 const benachrichtigungListe = document.querySelector("#benachrichtigungListe");
 const benachrichtigungenAktualisierenButton = document.querySelector("#benachrichtigungenAktualisierenButton");
 
+const aktivitaetTitel = document.querySelector("#aktivitaetTitel");
+const aktivitaetListe = document.querySelector("#aktivitaetListe");
+const aktivitaetLeerenButton = document.querySelector("#aktivitaetLeerenButton");
+
 let detailProjektId = null;
 let timerIntervall = null;
 
 
 const speicherName = "miniProjektboardAufgabenV12";
 const aktiverWorkspaceSpeicherName = "miniProjektboardAktiverWorkspace";
+const aktivitaetSpeicherName = "miniProjektboardAktivitaeten";
 
 let aktiverWorkspace = "programmieren";
 let aufgaben = [];
+let aktivitaeten = [];
 let kalenderDatum = new Date();
 let ausgewaehltesDatum = null;
 
@@ -172,6 +178,7 @@ aufgabenFormular.addEventListener("submit", function (event) {
   };
 
   timelineEintragHinzufuegen(neueAufgabe, "Projekt erstellt", "Das Projekt wurde im Workspace angelegt.");
+  aktivitaetHinzufuegen("Projekt erstellt", neueAufgabe.text);
 
   aufgaben.push(neueAufgabe);
 
@@ -213,6 +220,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   kalenderDatum.setMonth(kalenderDatum.getMonth() - 1);
   kalenderAnzeigen();
   benachrichtigungenAnzeigen();
+  aktivitaetenAnzeigen();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -220,12 +228,14 @@ kalenderHeuteButton.addEventListener("click", function () {
   ausgewaehltesDatum = datumAlsSchluessel(new Date());
   kalenderAnzeigen();
   benachrichtigungenAnzeigen();
+  aktivitaetenAnzeigen();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
   kalenderDatum.setMonth(kalenderDatum.getMonth() + 1);
   kalenderAnzeigen();
   benachrichtigungenAnzeigen();
+  aktivitaetenAnzeigen();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -964,6 +974,7 @@ function neueIdErstellen() {
 }
 
 aktivenWorkspaceLaden();
+aktivitaetenLaden();
 aufgabenLaden();
 workspaceAnzeigeAktualisieren();
 boardAnzeigen();
@@ -1024,6 +1035,7 @@ detailSpeichernButton.addEventListener("click", function () {
 
   aufgabe.notiz = detailNotiz.value;
   timelineEintragHinzufuegen(aufgabe, "Notiz gespeichert", "Die Projektnotiz wurde aktualisiert.");
+  aktivitaetHinzufuegen("Notiz gespeichert", aufgabe.text);
 
   aufgabenSpeichern();
   detailFensterSchliessen();
@@ -1275,12 +1287,16 @@ function timelineEintragHinzufuegen(aufgabe, titel, beschreibung) {
     aufgabe.timeline = [];
   }
 
+  const datum = new Date().toLocaleString("de-DE");
+
   aufgabe.timeline.unshift({
     id: neueIdErstellen(),
     titel: titel,
     beschreibung: beschreibung,
-    datum: new Date().toLocaleString("de-DE")
+    datum: datum
   });
+
+  aktivitaetHinzufuegen(titel, `${aufgabe.text}: ${beschreibung}`, datum);
 
   if (aufgabe.timeline.length > 30) {
     aufgabe.timeline = aufgabe.timeline.slice(0, 30);
@@ -1649,4 +1665,89 @@ linkFormular.addEventListener("submit", function (event) {
   aufgabenSpeichern();
   linksAnzeigen(aufgabe);
   timelineAnzeigen(aufgabe);
+});
+
+
+function aktivitaetHinzufuegen(titel, beschreibung, datum = new Date().toLocaleString("de-DE")) {
+  aktivitaeten.unshift({
+    id: neueIdErstellen(),
+    titel: titel,
+    beschreibung: beschreibung,
+    workspace: aktiverWorkspace,
+    datum: datum
+  });
+
+  if (aktivitaeten.length > 80) {
+    aktivitaeten = aktivitaeten.slice(0, 80);
+  }
+
+  aktivitaetenSpeichern();
+}
+
+function aktivitaetenAnzeigen() {
+  aktivitaetListe.innerHTML = "";
+
+  const sichtbareAktivitaeten = aktivitaeten.filter(function (eintrag) {
+    return eintrag.workspace === aktiverWorkspace;
+  }).slice(0, 12);
+
+  aktivitaetTitel.textContent = `${sichtbareAktivitaeten.length} letzte Aktivitäten`;
+
+  if (sichtbareAktivitaeten.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("aktivitaet-leer");
+    leer.textContent = "Noch keine Aktivitäten im aktiven Workspace.";
+    aktivitaetListe.appendChild(leer);
+    return;
+  }
+
+  sichtbareAktivitaeten.forEach(function (eintrag) {
+    const element = document.createElement("div");
+    element.classList.add("aktivitaet-eintrag");
+
+    const titel = document.createElement("strong");
+    titel.textContent = eintrag.titel;
+
+    const beschreibung = document.createElement("span");
+    beschreibung.textContent = eintrag.beschreibung;
+
+    const datum = document.createElement("span");
+    datum.textContent = eintrag.datum;
+
+    element.appendChild(titel);
+    element.appendChild(beschreibung);
+    element.appendChild(datum);
+
+    aktivitaetListe.appendChild(element);
+  });
+}
+
+function aktivitaetenSpeichern() {
+  localStorage.setItem(aktivitaetSpeicherName, JSON.stringify(aktivitaeten));
+}
+
+function aktivitaetenLaden() {
+  const gespeicherteAktivitaeten = localStorage.getItem(aktivitaetSpeicherName);
+
+  if (gespeicherteAktivitaeten === null) {
+    aktivitaeten = [];
+    return;
+  }
+
+  aktivitaeten = JSON.parse(gespeicherteAktivitaeten);
+}
+
+aktivitaetLeerenButton.addEventListener("click", function () {
+  const bestaetigung = confirm("Möchtest du das Aktivitätsprotokoll für diesen Workspace wirklich leeren?");
+
+  if (bestaetigung === false) {
+    return;
+  }
+
+  aktivitaeten = aktivitaeten.filter(function (eintrag) {
+    return eintrag.workspace !== aktiverWorkspace;
+  });
+
+  aktivitaetenSpeichern();
+  aktivitaetenAnzeigen();
 });
