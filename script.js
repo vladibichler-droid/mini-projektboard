@@ -343,6 +343,17 @@ function gefilterteAufgabenErmitteln() {
 function aufgabenkarteErstellen(aufgabe) {
   const karte = document.createElement("div");
   karte.classList.add("aufgabenkarte");
+  karte.draggable = true;
+  karte.dataset.aufgabenId = aufgabe.id;
+
+  karte.addEventListener("dragstart", function () {
+    karte.classList.add("dragging");
+    event.dataTransfer.setData("text/plain", String(aufgabe.id));
+  });
+
+  karte.addEventListener("dragend", function () {
+    karte.classList.remove("dragging");
+  });
 
   if (aufgabe.favorit) {
     karte.classList.add("favorit");
@@ -1004,6 +1015,7 @@ aktivenWorkspaceLaden();
 aktivitaetenLaden();
 aufgabenLaden();
 workspaceAnzeigeAktualisieren();
+dragUndDropEinrichten();
 boardAnzeigen();
 
 
@@ -2083,3 +2095,64 @@ tagFormular.addEventListener("submit", function (event) {
   tagsAnzeigen(aufgabe);
   timelineAnzeigen(aufgabe);
 });
+
+
+function dragUndDropEinrichten() {
+  const spalten = document.querySelectorAll("[data-status-zone]");
+
+  spalten.forEach(function (spalte) {
+    spalte.addEventListener("dragover", function (event) {
+      event.preventDefault();
+      spalte.classList.add("drag-over");
+    });
+
+    spalte.addEventListener("dragleave", function () {
+      spalte.classList.remove("drag-over");
+    });
+
+    spalte.addEventListener("drop", function (event) {
+      event.preventDefault();
+
+      const aufgabenId = Number(event.dataTransfer.getData("text/plain"));
+      const neuerStatus = spalte.dataset.statusZone;
+
+      aufgabePerDragVerschieben(aufgabenId, neuerStatus);
+      spalte.classList.remove("drag-over");
+    });
+  });
+}
+
+function aufgabePerDragVerschieben(aufgabenId, neuerStatus) {
+  const aufgabe = aufgaben.find(function (eintrag) {
+    return eintrag.id === aufgabenId;
+  });
+
+  if (!aufgabe || !statusTexte[neuerStatus]) {
+    return;
+  }
+
+  const alterStatus = aufgabe.status;
+
+  if (alterStatus === neuerStatus) {
+    return;
+  }
+
+  aufgabe.status = neuerStatus;
+
+  if (neuerStatus === "arbeit" && aufgabe.fortschritt === 0) {
+    aufgabe.fortschritt = 5;
+  }
+
+  if (neuerStatus === "fertig") {
+    aufgabe.fortschritt = 100;
+  }
+
+  timelineEintragHinzufuegen(
+    aufgabe,
+    "Per Drag & Drop verschoben",
+    `${statusTexte[alterStatus]} → ${statusTexte[neuerStatus]}`
+  );
+
+  aufgabenSpeichern();
+  boardAnzeigen();
+}

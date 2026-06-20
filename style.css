@@ -2192,3 +2192,27 @@ h1 {
     width: 100%;
   }
 }
+
+/* Version 28 – Drag & Drop Deluxe */
+
+.aufgabenkarte {
+  cursor: grab;
+}
+
+.aufgabenkarte:active {
+  cursor: grabbing;
+}
+
+.aufgabenkarte.dragging {
+  opacity: 0.55;
+  transform: scale(0.98);
+}
+
+.spalte.drag-over {
+  border-color: rgba(34, 211, 238, 0.55);
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.16);
+}
+
+.spalte.drag-over .spalten-kopf h2 {
+  color: #cffafe;
+}
