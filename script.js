@@ -3,6 +3,9 @@ const aufgabenEingabe = document.querySelector("#aufgabenEingabe");
 const sucheEingabe = document.querySelector("#sucheEingabe");
 const zuruecksetzenButton = document.querySelector("#zuruecksetzenButton");
 
+const workspaceName = document.querySelector("#workspaceName");
+const workspaceButtons = document.querySelectorAll(".workspace-button");
+
 const offenListe = document.querySelector("#offenListe");
 const arbeitListe = document.querySelector("#arbeitListe");
 const fertigListe = document.querySelector("#fertigListe");
@@ -21,9 +24,18 @@ const archivUebersicht = document.querySelector("#archivUebersicht");
 const fortschrittUebersicht = document.querySelector("#fortschrittUebersicht");
 const fortschrittUebersichtBalken = document.querySelector("#fortschrittUebersichtBalken");
 
-const speicherName = "miniProjektboardAufgaben";
+const speicherName = "miniProjektboardAufgabenV12";
+const aktiverWorkspaceSpeicherName = "miniProjektboardAktiverWorkspace";
 
+let aktiverWorkspace = "programmieren";
 let aufgaben = [];
+
+const workspaces = {
+  programmieren: "💻 Programmieren",
+  privat: "🏠 Privat",
+  lernen: "📚 Lernen",
+  arbeit: "💼 Arbeit"
+};
 
 const standardAufgaben = [
   {
@@ -32,7 +44,8 @@ const standardAufgaben = [
     status: "arbeit",
     fortschritt: 65,
     erstelltAm: heutigesDatumErstellen(),
-    favorit: true
+    favorit: true,
+    workspace: "programmieren"
   },
   {
     id: 2,
@@ -40,23 +53,35 @@ const standardAufgaben = [
     status: "fertig",
     fortschritt: 100,
     erstelltAm: heutigesDatumErstellen(),
-    favorit: true
+    favorit: true,
+    workspace: "programmieren"
   },
   {
     id: 3,
-    text: "Developer Dashboard optisch verbessern",
+    text: "Wohnung aufräumen",
     status: "offen",
-    fortschritt: 15,
+    fortschritt: 10,
     erstelltAm: heutigesDatumErstellen(),
-    favorit: false
+    favorit: false,
+    workspace: "privat"
   },
   {
     id: 4,
-    text: "Alte Testaufgaben archivieren",
-    status: "archiv",
-    fortschritt: 100,
+    text: "JavaScript Grundlagen wiederholen",
+    status: "arbeit",
+    fortschritt: 35,
     erstelltAm: heutigesDatumErstellen(),
-    favorit: false
+    favorit: false,
+    workspace: "lernen"
+  },
+  {
+    id: 5,
+    text: "Wochenplanung vorbereiten",
+    status: "offen",
+    fortschritt: 0,
+    erstelltAm: heutigesDatumErstellen(),
+    favorit: false,
+    workspace: "arbeit"
   }
 ];
 
@@ -77,16 +102,15 @@ aufgabenFormular.addEventListener("submit", function (event) {
     return;
   }
 
-  const neueAufgabe = {
+  aufgaben.push({
     id: neueIdErstellen(),
     text: aufgabenText,
     status: "offen",
     fortschritt: 0,
     erstelltAm: heutigesDatumErstellen(),
-    favorit: false
-  };
-
-  aufgaben.push(neueAufgabe);
+    favorit: false,
+    workspace: aktiverWorkspace
+  });
 
   aufgabenEingabe.value = "";
   aufgabenEingabe.focus();
@@ -107,10 +131,31 @@ zuruecksetzenButton.addEventListener("click", function () {
   }
 
   aufgaben = standardAufgabenKopieren();
-
   aufgabenSpeichern();
   boardAnzeigen();
 });
+
+workspaceButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    aktiverWorkspace = button.dataset.workspace;
+    localStorage.setItem(aktiverWorkspaceSpeicherName, aktiverWorkspace);
+    sucheEingabe.value = "";
+    workspaceAnzeigeAktualisieren();
+    boardAnzeigen();
+  });
+});
+
+function workspaceAnzeigeAktualisieren() {
+  workspaceName.textContent = workspaces[aktiverWorkspace];
+
+  workspaceButtons.forEach(function (button) {
+    if (button.dataset.workspace === aktiverWorkspace) {
+      button.classList.add("aktiv");
+    } else {
+      button.classList.remove("aktiv");
+    }
+  });
+}
 
 function boardAnzeigen() {
   offenListe.innerHTML = "";
@@ -147,10 +192,12 @@ function boardAnzeigen() {
 function gefilterteAufgabenErmitteln() {
   const suchbegriff = sucheEingabe.value.trim().toLowerCase();
 
-  let sichtbareAufgaben = aufgaben;
+  let sichtbareAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace;
+  });
 
   if (suchbegriff !== "") {
-    sichtbareAufgaben = aufgaben.filter(function (aufgabe) {
+    sichtbareAufgaben = sichtbareAufgaben.filter(function (aufgabe) {
       const text = aufgabe.text.toLowerCase();
       const status = statusTexte[aufgabe.status].toLowerCase();
       const datum = aufgabe.erstelltAm.toLowerCase();
@@ -261,12 +308,7 @@ function favoritButtonErstellen(aufgabe) {
   }
 
   button.addEventListener("click", function () {
-    aufgaben.forEach(function (eintrag) {
-      if (eintrag.id === aufgabe.id) {
-        eintrag.favorit = !eintrag.favorit;
-      }
-    });
-
+    aufgabe.favorit = !aufgabe.favorit;
     aufgabenSpeichern();
     boardAnzeigen();
   });
@@ -498,6 +540,14 @@ function aufgabenLaden() {
   aufgabenSpeichern();
 }
 
+function aktivenWorkspaceLaden() {
+  const gespeicherterWorkspace = localStorage.getItem(aktiverWorkspaceSpeicherName);
+
+  if (gespeicherterWorkspace && workspaces[gespeicherterWorkspace]) {
+    aktiverWorkspace = gespeicherterWorkspace;
+  }
+}
+
 function aufgabeReparieren(aufgabe) {
   const reparierteAufgabe = {
     id: aufgabe.id || neueIdErstellen(),
@@ -505,7 +555,8 @@ function aufgabeReparieren(aufgabe) {
     status: aufgabe.status || "offen",
     fortschritt: aufgabe.fortschritt,
     erstelltAm: aufgabe.erstelltAm || heutigesDatumErstellen(),
-    favorit: aufgabe.favorit || false
+    favorit: aufgabe.favorit || false,
+    workspace: aufgabe.workspace || "programmieren"
   };
 
   if (typeof reparierteAufgabe.fortschritt !== "number") {
@@ -516,6 +567,10 @@ function aufgabeReparieren(aufgabe) {
 
   if (!statusTexte[reparierteAufgabe.status]) {
     reparierteAufgabe.status = "offen";
+  }
+
+  if (!workspaces[reparierteAufgabe.workspace]) {
+    reparierteAufgabe.workspace = "programmieren";
   }
 
   return reparierteAufgabe;
@@ -529,7 +584,8 @@ function standardAufgabenKopieren() {
       status: aufgabe.status,
       fortschritt: aufgabe.fortschritt,
       erstelltAm: aufgabe.erstelltAm,
-      favorit: aufgabe.favorit
+      favorit: aufgabe.favorit,
+      workspace: aufgabe.workspace
     };
   });
 }
@@ -572,5 +628,7 @@ function neueIdErstellen() {
   return Date.now() + Math.floor(Math.random() * 1000);
 }
 
+aktivenWorkspaceLaden();
 aufgabenLaden();
+workspaceAnzeigeAktualisieren();
 boardAnzeigen();

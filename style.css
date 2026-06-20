@@ -1,28 +1,14 @@
 :root {
   --bg: #080f1f;
-  --panel: rgba(15, 23, 42, 0.74);
-  --panel-light: rgba(30, 41, 59, 0.78);
-  --card: rgba(24, 34, 54, 0.86);
-
   --border: rgba(148, 163, 184, 0.16);
-  --border-bright: rgba(191, 219, 254, 0.24);
-
   --text: #f8fafc;
   --text-soft: #cbd5e1;
   --text-muted: #94a3b8;
-
-  --blue: #60a5fa;
   --cyan: #22d3ee;
   --green: #22c55e;
   --yellow: #facc15;
   --orange: #fb923c;
   --red: #fb7185;
-
-  --radius-xl: 22px;
-  --radius-lg: 18px;
-  --radius-md: 14px;
-  --radius-sm: 10px;
-
   --shadow: 0 18px 45px rgba(0, 0, 0, 0.32);
   --shadow-card: 0 12px 28px rgba(0, 0, 0, 0.24);
 }
@@ -76,7 +62,6 @@ body::before {
   color: #bbf7d0;
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.01em;
 }
 
 h1 {
@@ -94,18 +79,77 @@ h1 {
   line-height: 1.55;
 }
 
+.workspace-bereich,
 .eingabe-bereich,
 .suchbereich {
-  max-width: 760px;
+  max-width: 1180px;
   margin-top: 14px;
   display: flex;
   gap: 9px;
   padding: 9px;
   background: rgba(15, 23, 42, 0.58);
   border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
+  border-radius: 22px;
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
+}
+
+.workspace-bereich {
+  padding: 12px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.workspace-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+#workspaceName {
+  display: block;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.workspace-auswahl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.workspace-button {
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(30, 41, 59, 0.62);
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.16s ease;
+}
+
+.workspace-button:hover {
+  background: rgba(96, 165, 250, 0.16);
+  color: #dbeafe;
+  transform: translateY(-1px);
+}
+
+.workspace-button.aktiv {
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.22), rgba(37, 99, 235, 0.28));
+  border-color: rgba(96, 165, 250, 0.38);
+  color: #dbeafe;
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.14);
+}
+
+.eingabe-bereich,
+.suchbereich {
+  max-width: 760px;
 }
 
 .suchbereich {
@@ -119,7 +163,7 @@ h1 {
   appearance: none;
   -webkit-appearance: none;
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: var(--radius-lg);
+  border-radius: 18px;
   padding: 9px 12px;
   background: rgba(15, 23, 42, 0.86);
   color: var(--text);
@@ -148,13 +192,14 @@ h1 {
 .eingabe-bereich button,
 .sekundaer-button,
 .karten-aktionen button,
-.fortschritt-steuerung button {
+.fortschritt-steuerung button,
+.favorit-button {
   transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
 .eingabe-bereich button {
   border: none;
-  border-radius: var(--radius-lg);
+  border-radius: 18px;
   padding: 8px 12px;
   background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: white;
@@ -165,9 +210,12 @@ h1 {
   box-shadow: 0 10px 22px rgba(37, 99, 235, 0.28);
 }
 
-.eingabe-bereich button:hover {
+.eingabe-bereich button:hover,
+.sekundaer-button:hover,
+.karten-aktionen button:hover,
+.fortschritt-steuerung button:hover,
+.favorit-button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.38);
 }
 
 .steuerung-bereich {
@@ -186,11 +234,6 @@ h1 {
   cursor: pointer;
 }
 
-.sekundaer-button:hover {
-  background: rgba(51, 65, 85, 0.78);
-  transform: translateY(-1px);
-}
-
 .uebersicht {
   max-width: 1180px;
   margin-top: 14px;
@@ -204,7 +247,7 @@ h1 {
   overflow: hidden;
   background: linear-gradient(180deg, rgba(30, 41, 59, 0.66), rgba(15, 23, 42, 0.66));
   border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
+  border-radius: 22px;
   padding: 11px;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
   backdrop-filter: blur(16px);
@@ -223,19 +266,21 @@ h1 {
   padding: 12px;
 }
 
-.uebersicht-zahl {
+.uebersicht-zahl,
+.uebersicht-text,
+.uebersicht-fortschritt {
   position: relative;
   z-index: 1;
+}
+
+.uebersicht-zahl {
   display: block;
   font-size: 18px;
   font-weight: 900;
   color: #dbeafe;
-  letter-spacing: -0.03em;
 }
 
 .uebersicht-text {
-  position: relative;
-  z-index: 1;
   display: block;
   margin-top: 3px;
   font-size: 11px;
@@ -243,8 +288,6 @@ h1 {
 }
 
 .uebersicht-fortschritt {
-  position: relative;
-  z-index: 1;
   height: 7px;
   margin-top: 9px;
   border-radius: 999px;
@@ -342,6 +385,10 @@ h1 {
   box-shadow: var(--shadow-card);
 }
 
+.aufgabenkarte.favorit {
+  border-color: rgba(250, 204, 21, 0.28);
+}
+
 .aufgabenkarte::before {
   content: "";
   position: absolute;
@@ -355,10 +402,20 @@ h1 {
   z-index: 1;
 }
 
-.status-zeile {
+.karten-topzeile,
+.status-zeile,
+.fortschritt-kopf {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.karten-topzeile {
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.status-zeile {
   gap: 8px;
   margin-bottom: 8px;
 }
@@ -372,6 +429,25 @@ h1 {
   border: 1px solid rgba(148, 163, 184, 0.18);
   font-size: 11px;
   font-weight: 900;
+}
+
+.favorit-button {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(250, 204, 21, 0.2);
+  background: rgba(250, 204, 21, 0.08);
+  color: #64748b;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.favorit-button.aktiv {
+  background: rgba(250, 204, 21, 0.18);
+  border-color: rgba(250, 204, 21, 0.38);
+  color: #facc15;
+  box-shadow: 0 0 18px rgba(250, 204, 21, 0.16);
 }
 
 .fortschritt-prozent {
@@ -398,9 +474,6 @@ h1 {
 }
 
 .fortschritt-kopf {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   margin-bottom: 5px;
   color: var(--text-muted);
   font-size: 11px;
@@ -454,11 +527,6 @@ h1 {
   cursor: pointer;
 }
 
-.fortschritt-steuerung button:hover {
-  background: rgba(96, 165, 250, 0.28);
-  transform: translateY(-1px);
-}
-
 .fortschritt-wert {
   text-align: center;
   color: var(--text);
@@ -483,29 +551,16 @@ h1 {
   cursor: pointer;
 }
 
-.karten-aktionen button:hover {
-  background: rgba(96, 165, 250, 0.26);
-  transform: translateY(-1px);
-}
-
 .karten-aktionen .archiv-button {
   background: rgba(148, 163, 184, 0.12);
   color: #e2e8f0;
   border: 1px solid rgba(203, 213, 225, 0.18);
 }
 
-.karten-aktionen .archiv-button:hover {
-  background: rgba(148, 163, 184, 0.23);
-}
-
 .karten-aktionen .loeschen-button {
   background: rgba(251, 113, 133, 0.12);
   color: #fecdd3;
   border: 1px solid rgba(251, 113, 133, 0.26);
-}
-
-.karten-aktionen .loeschen-button:hover {
-  background: rgba(251, 113, 133, 0.24);
 }
 
 .leer-hinweis {
@@ -554,6 +609,15 @@ h1 {
     padding: 18px 12px;
   }
 
+  .workspace-bereich {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .workspace-auswahl {
+    justify-content: flex-start;
+  }
+
   .board {
     grid-template-columns: 1fr;
   }
@@ -581,43 +645,4 @@ h1 {
   .uebersicht-karte-breit {
     grid-column: span 2;
   }
-}
-
-/* Version 11 – Favoriten */
-
-.karten-topzeile {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.favorit-button {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  border: 1px solid rgba(250, 204, 21, 0.2);
-  background: rgba(250, 204, 21, 0.08);
-  color: #64748b;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.favorit-button:hover {
-  background: rgba(250, 204, 21, 0.18);
-  color: #fde68a;
-  transform: translateY(-1px);
-}
-
-.favorit-button.aktiv {
-  background: rgba(250, 204, 21, 0.18);
-  border-color: rgba(250, 204, 21, 0.38);
-  color: #facc15;
-  box-shadow: 0 0 18px rgba(250, 204, 21, 0.16);
-}
-
-.aufgabenkarte.favorit {
-  border-color: rgba(250, 204, 21, 0.28);
 }

@@ -11,14 +11,36 @@
   <main class="app">
 
     <header class="kopfbereich">
-      <p class="label">Mini-Projekt erweitert</p>
+      <p class="label">Projektmanagement Dashboard</p>
 
       <h1>Mein Projektboard</h1>
 
       <p class="beschreibung">
-        Ein modernes Mini-Board, um Projekte übersichtlich zu planen,
-        Fortschritte zu verfolgen und Aufgaben sauber zu organisieren.
+        Ein modernes Projektboard mit Workspaces, Fortschritt, Favoriten,
+        Suche und strukturierter Aufgabenverwaltung.
       </p>
+
+      <section class="workspace-bereich">
+        <div>
+          <span class="workspace-label">Aktiver Workspace</span>
+          <strong id="workspaceName">💻 Programmieren</strong>
+        </div>
+
+        <div class="workspace-auswahl">
+          <button type="button" class="workspace-button aktiv" data-workspace="programmieren">
+            💻 Programmieren
+          </button>
+          <button type="button" class="workspace-button" data-workspace="privat">
+            🏠 Privat
+          </button>
+          <button type="button" class="workspace-button" data-workspace="lernen">
+            📚 Lernen
+          </button>
+          <button type="button" class="workspace-button" data-workspace="arbeit">
+            💼 Arbeit
+          </button>
+        </div>
+      </section>
 
       <form class="eingabe-bereich" id="aufgabenFormular">
         <input
@@ -92,7 +114,6 @@
           <h2>Offen</h2>
           <span id="offenZaehler">0</span>
         </div>
-
         <div class="karten-liste" id="offenListe"></div>
       </article>
 
@@ -101,7 +122,6 @@
           <h2>In Arbeit</h2>
           <span id="arbeitZaehler">0</span>
         </div>
-
         <div class="karten-liste" id="arbeitListe"></div>
       </article>
 
@@ -110,7 +130,6 @@
           <h2>Fertig</h2>
           <span id="fertigZaehler">0</span>
         </div>
-
         <div class="karten-liste" id="fertigListe"></div>
       </article>
 
@@ -119,14 +138,13 @@
           <h2>Archiv</h2>
           <span id="archivZaehler">0</span>
         </div>
-
         <div class="karten-liste" id="archivListe"></div>
       </article>
 
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 11 · Favoriten-Funktion hinzugefügt</p>
+      <p>Version 12 · Workspace-System vollständig integriert</p>
     </footer>
 
   </main>
