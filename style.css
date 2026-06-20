@@ -2394,3 +2394,74 @@ textarea:focus-visible {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Version 32 – Änderungsverlauf */
+
+.history-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.history-kopf {
+  margin-bottom: 10px;
+}
+
+.history-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.history-kopf strong {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.history-liste {
+  display: grid;
+  gap: 7px;
+  max-height: 180px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.history-eintrag {
+  padding: 9px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.history-eintrag strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.history-eintrag span {
+  display: block;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.history-leer {
+  padding: 9px;
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.22);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}

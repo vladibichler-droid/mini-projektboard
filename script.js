@@ -107,6 +107,8 @@ const chartArbeit = document.querySelector("#chartArbeit");
 const chartFertig = document.querySelector("#chartFertig");
 const chartArchiv = document.querySelector("#chartArchiv");
 
+const historyListe = document.querySelector("#historyListe");
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -252,6 +254,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   syncAnzeigeAktualisieren();
   vorschlagAnzeigen();
   miniChartsAktualisieren();
+  historyAnzeigen();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -263,6 +266,7 @@ kalenderHeuteButton.addEventListener("click", function () {
   syncAnzeigeAktualisieren();
   vorschlagAnzeigen();
   miniChartsAktualisieren();
+  historyAnzeigen();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
@@ -273,6 +277,7 @@ kalenderWeiterButton.addEventListener("click", function () {
   syncAnzeigeAktualisieren();
   vorschlagAnzeigen();
   miniChartsAktualisieren();
+  historyAnzeigen();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1796,6 +1801,7 @@ aktivitaetLeerenButton.addEventListener("click", function () {
   syncAnzeigeAktualisieren();
   vorschlagAnzeigen();
   miniChartsAktualisieren();
+  historyAnzeigen();
 });
 
 
@@ -2253,4 +2259,43 @@ function miniChartsAktualisieren() {
   chartArbeit.style.width = `${Math.round((arbeit / gesamt) * 100)}%`;
   chartFertig.style.width = `${Math.round((fertig / gesamt) * 100)}%`;
   chartArchiv.style.width = `${Math.round((archiv / gesamt) * 100)}%`;
+}
+
+
+function historyAnzeigen() {
+  historyListe.innerHTML = "";
+
+  const eintraege = aktivitaeten
+    .filter(function (eintrag) {
+      return eintrag.workspace === aktiverWorkspace;
+    })
+    .slice(0, 8);
+
+  if (eintraege.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("history-leer");
+    leer.textContent = "Noch keine Änderungen im aktiven Workspace.";
+    historyListe.appendChild(leer);
+    return;
+  }
+
+  eintraege.forEach(function (eintrag) {
+    const element = document.createElement("div");
+    element.classList.add("history-eintrag");
+
+    const titel = document.createElement("strong");
+    titel.textContent = eintrag.titel;
+
+    const beschreibung = document.createElement("span");
+    beschreibung.textContent = eintrag.beschreibung;
+
+    const datum = document.createElement("span");
+    datum.textContent = eintrag.datum;
+
+    element.appendChild(titel);
+    element.appendChild(beschreibung);
+    element.appendChild(datum);
+
+    historyListe.appendChild(element);
+  });
 }
