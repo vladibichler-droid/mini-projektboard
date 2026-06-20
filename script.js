@@ -40,6 +40,19 @@ const kalenderGrid = document.querySelector("#kalenderGrid");
 const kalenderAuswahlTitel = document.querySelector("#kalenderAuswahlTitel");
 const kalenderAufgabenListe = document.querySelector("#kalenderAufgabenListe");
 
+const detailOverlay = document.querySelector("#detailOverlay");
+const detailTitel = document.querySelector("#detailTitel");
+const detailStatus = document.querySelector("#detailStatus");
+const detailFortschritt = document.querySelector("#detailFortschritt");
+const detailWorkspace = document.querySelector("#detailWorkspace");
+const detailDatum = document.querySelector("#detailDatum");
+const detailNotiz = document.querySelector("#detailNotiz");
+const detailSchliessenButton = document.querySelector("#detailSchliessenButton");
+const detailSpeichernButton = document.querySelector("#detailSpeichernButton");
+
+let detailProjektId = null;
+
+
 const speicherName = "miniProjektboardAufgabenV12";
 const aktiverWorkspaceSpeicherName = "miniProjektboardAktiverWorkspace";
 
@@ -328,6 +341,16 @@ function aufgabenkarteErstellen(aufgabe) {
   karte.appendChild(metaZeile);
   karte.appendChild(fortschrittBox);
   karte.appendChild(fortschrittSteuerung);
+  const detailButton = document.createElement("button");
+  detailButton.textContent = "Details";
+  detailButton.classList.add("detail-button");
+
+  detailButton.addEventListener("click", function () {
+    detailFensterOeffnen(aufgabe.id);
+  });
+
+  aktionen.prepend(detailButton);
+
   karte.appendChild(aktionen);
 
   return karte;
@@ -880,3 +903,57 @@ aktivenWorkspaceLaden();
 aufgabenLaden();
 workspaceAnzeigeAktualisieren();
 boardAnzeigen();
+
+
+function detailFensterOeffnen(aufgabenId) {
+  const aufgabe = aufgaben.find(function (eintrag) {
+    return eintrag.id === aufgabenId;
+  });
+
+  if (!aufgabe) {
+    return;
+  }
+
+  detailProjektId = aufgabe.id;
+
+  detailTitel.textContent = aufgabe.text;
+  detailStatus.textContent = statusTexte[aufgabe.status];
+  detailFortschritt.textContent = `${aufgabe.fortschritt} %`;
+  detailWorkspace.textContent = workspaces[aufgabe.workspace] || aufgabe.workspace;
+  detailDatum.textContent = aufgabe.erstelltAm;
+  detailNotiz.value = aufgabe.notiz || "";
+
+  detailOverlay.classList.add("aktiv");
+}
+
+function detailFensterSchliessen() {
+  detailOverlay.classList.remove("aktiv");
+  detailProjektId = null;
+}
+
+detailSchliessenButton.addEventListener("click", detailFensterSchliessen);
+
+detailOverlay.addEventListener("click", function (event) {
+  if (event.target === detailOverlay) {
+    detailFensterSchliessen();
+  }
+});
+
+detailSpeichernButton.addEventListener("click", function () {
+  if (detailProjektId === null) {
+    return;
+  }
+
+  const aufgabe = aufgaben.find(function (eintrag) {
+    return eintrag.id === detailProjektId;
+  });
+
+  if (!aufgabe) {
+    return;
+  }
+
+  aufgabe.notiz = detailNotiz.value;
+
+  aufgabenSpeichern();
+  detailFensterSchliessen();
+});

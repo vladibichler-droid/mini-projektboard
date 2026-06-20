@@ -217,8 +217,58 @@
 
     </section>
 
+    <section class="detail-overlay" id="detailOverlay">
+      <article class="detail-fenster">
+        <div class="detail-kopf">
+          <div>
+            <span class="detail-label">Projekt-Detailansicht</span>
+            <h2 id="detailTitel">Projekt</h2>
+          </div>
+
+          <button type="button" id="detailSchliessenButton" class="detail-schliessen-button">
+            ×
+          </button>
+        </div>
+
+        <div class="detail-inhalt">
+          <div class="detail-info-grid">
+            <div class="detail-info-karte">
+              <span>Status</span>
+              <strong id="detailStatus">–</strong>
+            </div>
+
+            <div class="detail-info-karte">
+              <span>Fortschritt</span>
+              <strong id="detailFortschritt">0 %</strong>
+            </div>
+
+            <div class="detail-info-karte">
+              <span>Workspace</span>
+              <strong id="detailWorkspace">–</strong>
+            </div>
+
+            <div class="detail-info-karte">
+              <span>Erstellt am</span>
+              <strong id="detailDatum">–</strong>
+            </div>
+          </div>
+
+          <div class="detail-notiz-box">
+            <span class="detail-label">Notiz</span>
+            <textarea id="detailNotiz" placeholder="Notiz zu diesem Projekt eingeben ..."></textarea>
+          </div>
+
+          <div class="detail-aktionen">
+            <button type="button" id="detailSpeichernButton">
+              Notiz speichern
+            </button>
+          </div>
+        </div>
+      </article>
+    </section>
+
     <footer class="abschluss-box">
-      <p>Version 14 · Kalenderansicht integriert</p>
+      <p>Version 15 · Projekt-Detailansicht integriert</p>
     </footer>
 
   </main>

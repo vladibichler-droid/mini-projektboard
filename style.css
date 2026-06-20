@@ -937,3 +937,171 @@ h1 {
     gap: 5px;
   }
 }
+
+/* Version 15 – Projekt-Detailansicht */
+
+.detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(14px);
+}
+
+.detail-overlay.aktiv {
+  display: flex;
+}
+
+.detail-fenster {
+  width: min(720px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.96));
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+.detail-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.detail-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.detail-kopf h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.detail-schliessen-button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #cbd5e1;
+  font-size: 22px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.detail-schliessen-button:hover {
+  background: rgba(251, 113, 133, 0.16);
+  border-color: rgba(251, 113, 133, 0.28);
+  color: #fecdd3;
+}
+
+.detail-inhalt {
+  padding: 16px;
+}
+
+.detail-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.detail-info-karte {
+  padding: 11px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.52);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.detail-info-karte span {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.detail-info-karte strong {
+  display: block;
+  color: #dbeafe;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.detail-notiz-box {
+  margin-top: 14px;
+}
+
+.detail-notiz-box textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 12px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  outline: none;
+}
+
+.detail-notiz-box textarea::placeholder {
+  color: #94a3b8;
+}
+
+.detail-notiz-box textarea:focus {
+  border-color: rgba(96, 165, 250, 0.75);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.14);
+}
+
+.detail-aktionen {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.detail-aktionen button {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.28);
+}
+
+.detail-aktionen button:hover {
+  transform: translateY(-1px);
+}
+
+.detail-button {
+  background: rgba(34, 211, 238, 0.12) !important;
+  border-color: rgba(34, 211, 238, 0.24) !important;
+  color: #cffafe !important;
+}
+
+@media (max-width: 850px) {
+  .detail-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .detail-kopf h2 {
+    font-size: 17px;
+  }
+}
