@@ -31,28 +31,32 @@ const standardAufgaben = [
     text: "Mini-Projektboard weiterentwickeln",
     status: "arbeit",
     fortschritt: 65,
-    erstelltAm: heutigesDatumErstellen()
+    erstelltAm: heutigesDatumErstellen(),
+    favorit: true
   },
   {
     id: 2,
     text: "CloudOps Hosting Platform dokumentieren",
     status: "fertig",
     fortschritt: 100,
-    erstelltAm: heutigesDatumErstellen()
+    erstelltAm: heutigesDatumErstellen(),
+    favorit: true
   },
   {
     id: 3,
     text: "Developer Dashboard optisch verbessern",
     status: "offen",
     fortschritt: 15,
-    erstelltAm: heutigesDatumErstellen()
+    erstelltAm: heutigesDatumErstellen(),
+    favorit: false
   },
   {
     id: 4,
     text: "Alte Testaufgaben archivieren",
     status: "archiv",
     fortschritt: 100,
-    erstelltAm: heutigesDatumErstellen()
+    erstelltAm: heutigesDatumErstellen(),
+    favorit: false
   }
 ];
 
@@ -78,7 +82,8 @@ aufgabenFormular.addEventListener("submit", function (event) {
     text: aufgabenText,
     status: "offen",
     fortschritt: 0,
-    erstelltAm: heutigesDatumErstellen()
+    erstelltAm: heutigesDatumErstellen(),
+    favorit: false
   };
 
   aufgaben.push(neueAufgabe);
@@ -142,20 +147,30 @@ function boardAnzeigen() {
 function gefilterteAufgabenErmitteln() {
   const suchbegriff = sucheEingabe.value.trim().toLowerCase();
 
-  if (suchbegriff === "") {
-    return aufgaben;
+  let sichtbareAufgaben = aufgaben;
+
+  if (suchbegriff !== "") {
+    sichtbareAufgaben = aufgaben.filter(function (aufgabe) {
+      const text = aufgabe.text.toLowerCase();
+      const status = statusTexte[aufgabe.status].toLowerCase();
+      const datum = aufgabe.erstelltAm.toLowerCase();
+      const favoritText = aufgabe.favorit ? "favorit angeheftet wichtig stern" : "";
+
+      return (
+        text.includes(suchbegriff) ||
+        status.includes(suchbegriff) ||
+        datum.includes(suchbegriff) ||
+        favoritText.includes(suchbegriff)
+      );
+    });
   }
 
-  return aufgaben.filter(function (aufgabe) {
-    const text = aufgabe.text.toLowerCase();
-    const status = statusTexte[aufgabe.status].toLowerCase();
-    const datum = aufgabe.erstelltAm.toLowerCase();
+  return sichtbareAufgaben.sort(function (a, b) {
+    if (a.favorit === b.favorit) {
+      return b.fortschritt - a.fortschritt;
+    }
 
-    return (
-      text.includes(suchbegriff) ||
-      status.includes(suchbegriff) ||
-      datum.includes(suchbegriff)
-    );
+    return a.favorit ? -1 : 1;
   });
 }
 
@@ -163,18 +178,29 @@ function aufgabenkarteErstellen(aufgabe) {
   const karte = document.createElement("div");
   karte.classList.add("aufgabenkarte");
 
-  const statusZeile = document.createElement("div");
-  statusZeile.classList.add("status-zeile");
+  if (aufgabe.favorit) {
+    karte.classList.add("favorit");
+  }
+
+  const topZeile = document.createElement("div");
+  topZeile.classList.add("karten-topzeile");
 
   const statusChip = document.createElement("span");
   statusChip.classList.add("status-chip");
   statusChip.textContent = statusTexte[aufgabe.status];
 
+  const favoritButton = favoritButtonErstellen(aufgabe);
+
+  topZeile.appendChild(statusChip);
+  topZeile.appendChild(favoritButton);
+
+  const statusZeile = document.createElement("div");
+  statusZeile.classList.add("status-zeile");
+
   const fortschrittKurz = document.createElement("span");
   fortschrittKurz.classList.add("fortschritt-prozent");
   fortschrittKurz.textContent = `${aufgabe.fortschritt} %`;
 
-  statusZeile.appendChild(statusChip);
   statusZeile.appendChild(fortschrittKurz);
 
   const textBereich = document.createElement("div");
@@ -183,7 +209,9 @@ function aufgabenkarteErstellen(aufgabe) {
 
   const metaZeile = document.createElement("div");
   metaZeile.classList.add("meta-zeile");
-  metaZeile.textContent = `Erstellt am: ${aufgabe.erstelltAm}`;
+  metaZeile.textContent = aufgabe.favorit
+    ? `Erstellt am: ${aufgabe.erstelltAm} · Angeheftet`
+    : `Erstellt am: ${aufgabe.erstelltAm}`;
 
   const fortschrittBox = fortschrittAnzeigeErstellen(aufgabe.fortschritt);
   const fortschrittSteuerung = fortschrittSteuerungErstellen(aufgabe);
@@ -192,18 +220,15 @@ function aufgabenkarteErstellen(aufgabe) {
   aktionen.classList.add("karten-aktionen");
 
   if (aufgabe.status !== "offen") {
-    const offenButton = verschiebeButtonErstellen("Offen", aufgabe.id, "offen");
-    aktionen.appendChild(offenButton);
+    aktionen.appendChild(verschiebeButtonErstellen("Offen", aufgabe.id, "offen"));
   }
 
   if (aufgabe.status !== "arbeit") {
-    const arbeitButton = verschiebeButtonErstellen("In Arbeit", aufgabe.id, "arbeit");
-    aktionen.appendChild(arbeitButton);
+    aktionen.appendChild(verschiebeButtonErstellen("In Arbeit", aufgabe.id, "arbeit"));
   }
 
   if (aufgabe.status !== "fertig") {
-    const fertigButton = verschiebeButtonErstellen("Fertig", aufgabe.id, "fertig");
-    aktionen.appendChild(fertigButton);
+    aktionen.appendChild(verschiebeButtonErstellen("Fertig", aufgabe.id, "fertig"));
   }
 
   if (aufgabe.status !== "archiv") {
@@ -212,9 +237,9 @@ function aufgabenkarteErstellen(aufgabe) {
     aktionen.appendChild(archivButton);
   }
 
-  const loeschenButton = loeschenButtonErstellen(aufgabe.id);
-  aktionen.appendChild(loeschenButton);
+  aktionen.appendChild(loeschenButtonErstellen(aufgabe.id));
 
+  karte.appendChild(topZeile);
   karte.appendChild(statusZeile);
   karte.appendChild(textBereich);
   karte.appendChild(metaZeile);
@@ -223,6 +248,30 @@ function aufgabenkarteErstellen(aufgabe) {
   karte.appendChild(aktionen);
 
   return karte;
+}
+
+function favoritButtonErstellen(aufgabe) {
+  const button = document.createElement("button");
+  button.classList.add("favorit-button");
+  button.textContent = "★";
+  button.title = aufgabe.favorit ? "Favorit entfernen" : "Als Favorit markieren";
+
+  if (aufgabe.favorit) {
+    button.classList.add("aktiv");
+  }
+
+  button.addEventListener("click", function () {
+    aufgaben.forEach(function (eintrag) {
+      if (eintrag.id === aufgabe.id) {
+        eintrag.favorit = !eintrag.favorit;
+      }
+    });
+
+    aufgabenSpeichern();
+    boardAnzeigen();
+  });
+
+  return button;
 }
 
 function fortschrittAnzeigeErstellen(fortschritt) {
@@ -455,7 +504,8 @@ function aufgabeReparieren(aufgabe) {
     text: aufgabe.text || "Unbenannte Aufgabe",
     status: aufgabe.status || "offen",
     fortschritt: aufgabe.fortschritt,
-    erstelltAm: aufgabe.erstelltAm || heutigesDatumErstellen()
+    erstelltAm: aufgabe.erstelltAm || heutigesDatumErstellen(),
+    favorit: aufgabe.favorit || false
   };
 
   if (typeof reparierteAufgabe.fortschritt !== "number") {
@@ -478,7 +528,8 @@ function standardAufgabenKopieren() {
       text: aufgabe.text,
       status: aufgabe.status,
       fortschritt: aufgabe.fortschritt,
-      erstelltAm: aufgabe.erstelltAm
+      erstelltAm: aufgabe.erstelltAm,
+      favorit: aufgabe.favorit
     };
   });
 }
