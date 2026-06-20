@@ -151,7 +151,22 @@ const ressourceHinzufuegen = document.querySelector("#ressourceHinzufuegen");
 const ressourcenListe = document.querySelector("#ressourcenListe");
 const ressourcenSpeicherName = "miniProjektboardRessourcen";
 
+const budgetGeplant = document.querySelector("#budgetGeplant");
+const budgetVerbraucht = document.querySelector("#budgetVerbraucht");
+const stundenGeplant = document.querySelector("#stundenGeplant");
+const stundenErfasst = document.querySelector("#stundenErfasst");
+const budgetGeplantEingabe = document.querySelector("#budgetGeplantEingabe");
+const budgetVerbrauchtEingabe = document.querySelector("#budgetVerbrauchtEingabe");
+const stundenGeplantEingabe = document.querySelector("#stundenGeplantEingabe");
+const budgetSpeichernButton = document.querySelector("#budgetSpeichernButton");
+const budgetSpeicherName = "miniProjektboardBudget";
+
 let ressourcen = [];
+let budgetDaten = {
+  geplant: 0,
+  verbraucht: 0,
+  stundenGeplant: 0
+};
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -1079,6 +1094,8 @@ aufgabenLaden();
 wissensdatenbankLaden();
 ressourcenLaden();
 ressourcenAnzeigen();
+budgetLaden();
+budgetAnzeigen();
 kompaktModusLaden();
 workspaceAnzeigeAktualisieren();
 dragUndDropEinrichten();
@@ -2655,5 +2672,49 @@ ressourceHinzufuegen.addEventListener("click", function () {
   ressourcenAnzeigen();
 
   aktivitaetHinzufuegen("Ressource hinzugefügt", titel);
+  aktivitaetenAnzeigen();
+});
+
+
+function budgetLaden() {
+  const gespeicherteBudgetDaten = localStorage.getItem(budgetSpeicherName);
+
+  if (gespeicherteBudgetDaten === null) {
+    return;
+  }
+
+  budgetDaten = JSON.parse(gespeicherteBudgetDaten);
+}
+
+function budgetSpeichern() {
+  localStorage.setItem(budgetSpeicherName, JSON.stringify(budgetDaten));
+}
+
+function budgetAnzeigen() {
+  const erfassteSekunden = aufgaben.reduce(function (gesamt, aufgabe) {
+    return gesamt + gesamteZeitSekundenBerechnen(aufgabe);
+  }, 0);
+
+  const erfassteStunden = Math.round((erfassteSekunden / 3600) * 10) / 10;
+
+  budgetGeplant.textContent = `${budgetDaten.geplant || 0} €`;
+  budgetVerbraucht.textContent = `${budgetDaten.verbraucht || 0} €`;
+  stundenGeplant.textContent = `${budgetDaten.stundenGeplant || 0} Std.`;
+  stundenErfasst.textContent = `${erfassteStunden} Std.`;
+
+  budgetGeplantEingabe.value = budgetDaten.geplant || "";
+  budgetVerbrauchtEingabe.value = budgetDaten.verbraucht || "";
+  stundenGeplantEingabe.value = budgetDaten.stundenGeplant || "";
+}
+
+budgetSpeichernButton.addEventListener("click", function () {
+  budgetDaten.geplant = Number(budgetGeplantEingabe.value) || 0;
+  budgetDaten.verbraucht = Number(budgetVerbrauchtEingabe.value) || 0;
+  budgetDaten.stundenGeplant = Number(stundenGeplantEingabe.value) || 0;
+
+  budgetSpeichern();
+  budgetAnzeigen();
+
+  aktivitaetHinzufuegen("Budget gespeichert", "Budget- und Stundenwerte wurden aktualisiert.");
   aktivitaetenAnzeigen();
 });

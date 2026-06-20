@@ -168,6 +168,49 @@
 
 
 
+
+      <section class="budget-dashboard">
+        <div class="budget-kopf">
+          <div>
+            <span class="budget-label">Budget-Tracking</span>
+            <strong>Projektkosten & Stunden</strong>
+          </div>
+        </div>
+
+        <div class="budget-grid">
+          <div class="budget-karte">
+            <span>Geplantes Budget</span>
+            <strong id="budgetGeplant">0 €</strong>
+          </div>
+
+          <div class="budget-karte">
+            <span>Verbrauchtes Budget</span>
+            <strong id="budgetVerbraucht">0 €</strong>
+          </div>
+
+          <div class="budget-karte">
+            <span>Geplante Stunden</span>
+            <strong id="stundenGeplant">0 Std.</strong>
+          </div>
+
+          <div class="budget-karte">
+            <span>Erfasste Stunden</span>
+            <strong id="stundenErfasst">0 Std.</strong>
+          </div>
+        </div>
+
+        <div class="budget-form">
+          <input type="number" id="budgetGeplantEingabe" placeholder="Geplantes Budget in €">
+          <input type="number" id="budgetVerbrauchtEingabe" placeholder="Verbrauchtes Budget in €">
+          <input type="number" id="stundenGeplantEingabe" placeholder="Geplante Stunden">
+
+          <button type="button" id="budgetSpeichernButton">
+            Budget speichern
+          </button>
+        </div>
+      </section>
+
+
       <section class="ressourcen-dashboard">
         <div class="ressourcen-kopf">
           <div>
@@ -768,7 +811,7 @@
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 39 · Ressourcenverwaltung integriert</p>
+      <p>Version 40 · Budget-Tracking integriert</p>
     </footer>
 
   </main>
