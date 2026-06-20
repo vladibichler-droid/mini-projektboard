@@ -1105,3 +1105,141 @@ h1 {
     font-size: 17px;
   }
 }
+
+/* Version 16 – Checklisten pro Projekt */
+
+.detail-checkliste-box {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.detail-checkliste-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+#detailChecklisteFortschritt {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.checklisten-formular {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.checklisten-formular input {
+  flex: 1;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 14px;
+  padding: 9px 11px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+  font-size: 12px;
+  outline: none;
+}
+
+.checklisten-formular input::placeholder {
+  color: #94a3b8;
+}
+
+.checklisten-formular input:focus {
+  border-color: rgba(96, 165, 250, 0.75);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.14);
+}
+
+.checklisten-formular button {
+  border: none;
+  border-radius: 14px;
+  padding: 9px 11px;
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.checklisten-liste {
+  display: grid;
+  gap: 7px;
+}
+
+.checklisten-punkt {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.checklisten-punkt.erledigt {
+  opacity: 0.72;
+}
+
+.checklisten-punkt.erledigt .checklisten-text {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+.checklisten-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  background: rgba(96, 165, 250, 0.12);
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.checklisten-checkbox.aktiv {
+  background: rgba(34, 197, 94, 0.18);
+  border-color: rgba(74, 222, 128, 0.34);
+  color: #bbf7d0;
+}
+
+.checklisten-text {
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.checklisten-loeschen {
+  border: 1px solid rgba(251, 113, 133, 0.26);
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: rgba(251, 113, 133, 0.12);
+  color: #fecdd3;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.checklisten-leer {
+  padding: 9px;
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.22);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .checklisten-formular {
+    flex-direction: column;
+  }
+
+  .checklisten-formular button {
+    width: 100%;
+  }
+}

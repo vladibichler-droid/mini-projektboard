@@ -258,6 +258,28 @@
             <textarea id="detailNotiz" placeholder="Notiz zu diesem Projekt eingeben ..."></textarea>
           </div>
 
+          <div class="detail-checkliste-box">
+            <div class="detail-checkliste-kopf">
+              <span class="detail-label">Checkliste</span>
+              <span id="detailChecklisteFortschritt">0 / 0 erledigt</span>
+            </div>
+
+            <form class="checklisten-formular" id="checklistenFormular">
+              <input
+                type="text"
+                id="checklistenEingabe"
+                placeholder="Neuen Checklistenpunkt hinzufügen ..."
+                autocomplete="off"
+              >
+
+              <button type="submit">
+                Hinzufügen
+              </button>
+            </form>
+
+            <div class="checklisten-liste" id="checklistenListe"></div>
+          </div>
+
           <div class="detail-aktionen">
             <button type="button" id="detailSpeichernButton">
               Notiz speichern
@@ -268,7 +290,7 @@
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 15 · Projekt-Detailansicht integriert</p>
+      <p>Version 16 · Checklisten pro Projekt integriert</p>
     </footer>
 
   </main>

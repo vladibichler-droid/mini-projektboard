@@ -49,6 +49,10 @@ const detailDatum = document.querySelector("#detailDatum");
 const detailNotiz = document.querySelector("#detailNotiz");
 const detailSchliessenButton = document.querySelector("#detailSchliessenButton");
 const detailSpeichernButton = document.querySelector("#detailSpeichernButton");
+const checklistenFormular = document.querySelector("#checklistenFormular");
+const checklistenEingabe = document.querySelector("#checklistenEingabe");
+const checklistenListe = document.querySelector("#checklistenListe");
+const detailChecklisteFortschritt = document.querySelector("#detailChecklisteFortschritt");
 
 let detailProjektId = null;
 
@@ -827,7 +831,8 @@ function aufgabeReparieren(aufgabe) {
     fortschritt: aufgabe.fortschritt,
     erstelltAm: aufgabe.erstelltAm || heutigesDatumErstellen(),
     favorit: aufgabe.favorit || false,
-    workspace: aufgabe.workspace || "programmieren"
+    workspace: aufgabe.workspace || "programmieren",
+    checkliste: Array.isArray(aufgabe.checkliste) ? aufgabe.checkliste : []
   };
 
   if (typeof reparierteAufgabe.fortschritt !== "number") {
@@ -923,6 +928,7 @@ function detailFensterOeffnen(aufgabenId) {
   detailDatum.textContent = aufgabe.erstelltAm;
   detailNotiz.value = aufgabe.notiz || "";
 
+  checklisteAnzeigen(aufgabe);
   detailOverlay.classList.add("aktiv");
 }
 
@@ -956,4 +962,112 @@ detailSpeichernButton.addEventListener("click", function () {
 
   aufgabenSpeichern();
   detailFensterSchliessen();
+});
+
+
+function checklisteAnzeigen(aufgabe) {
+  checklistenListe.innerHTML = "";
+
+  if (!Array.isArray(aufgabe.checkliste)) {
+    aufgabe.checkliste = [];
+  }
+
+  const erledigt = aufgabe.checkliste.filter(function (punkt) {
+    return punkt.erledigt;
+  }).length;
+
+  detailChecklisteFortschritt.textContent = `${erledigt} / ${aufgabe.checkliste.length} erledigt`;
+
+  if (aufgabe.checkliste.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("checklisten-leer");
+    leer.textContent = "Noch keine Checklistenpunkte vorhanden.";
+    checklistenListe.appendChild(leer);
+    return;
+  }
+
+  aufgabe.checkliste.forEach(function (punkt) {
+    const eintrag = document.createElement("div");
+    eintrag.classList.add("checklisten-punkt");
+
+    if (punkt.erledigt) {
+      eintrag.classList.add("erledigt");
+    }
+
+    const checkbox = document.createElement("button");
+    checkbox.type = "button";
+    checkbox.classList.add("checklisten-checkbox");
+    checkbox.textContent = punkt.erledigt ? "✓" : "";
+
+    if (punkt.erledigt) {
+      checkbox.classList.add("aktiv");
+    }
+
+    checkbox.addEventListener("click", function () {
+      punkt.erledigt = !punkt.erledigt;
+      aufgabenSpeichern();
+      checklisteAnzeigen(aufgabe);
+    });
+
+    const text = document.createElement("span");
+    text.classList.add("checklisten-text");
+    text.textContent = punkt.text;
+
+    const loeschen = document.createElement("button");
+    loeschen.type = "button";
+    loeschen.classList.add("checklisten-loeschen");
+    loeschen.textContent = "Löschen";
+
+    loeschen.addEventListener("click", function () {
+      aufgabe.checkliste = aufgabe.checkliste.filter(function (eintrag) {
+        return eintrag.id !== punkt.id;
+      });
+
+      aufgabenSpeichern();
+      checklisteAnzeigen(aufgabe);
+    });
+
+    eintrag.appendChild(checkbox);
+    eintrag.appendChild(text);
+    eintrag.appendChild(loeschen);
+
+    checklistenListe.appendChild(eintrag);
+  });
+}
+
+checklistenFormular.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  if (detailProjektId === null) {
+    return;
+  }
+
+  const aufgabe = aufgaben.find(function (eintrag) {
+    return eintrag.id === detailProjektId;
+  });
+
+  if (!aufgabe) {
+    return;
+  }
+
+  const text = checklistenEingabe.value.trim();
+
+  if (text === "") {
+    return;
+  }
+
+  if (!Array.isArray(aufgabe.checkliste)) {
+    aufgabe.checkliste = [];
+  }
+
+  aufgabe.checkliste.push({
+    id: neueIdErstellen(),
+    text: text,
+    erledigt: false
+  });
+
+  checklistenEingabe.value = "";
+
+  aufgabenSpeichern();
+  checklisteAnzeigen(aufgabe);
 });
