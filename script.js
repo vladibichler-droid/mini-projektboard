@@ -90,6 +90,9 @@ const syncButton = document.querySelector("#syncButton");
 const syncZeitpunkt = document.querySelector("#syncZeitpunkt");
 const syncDetails = document.querySelector("#syncDetails");
 
+const vorschlagInhalt = document.querySelector("#vorschlagInhalt");
+const vorschlagAktualisierenButton = document.querySelector("#vorschlagAktualisierenButton");
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -233,6 +236,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   benachrichtigungenAnzeigen();
   aktivitaetenAnzeigen();
   syncAnzeigeAktualisieren();
+  vorschlagAnzeigen();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -242,6 +246,7 @@ kalenderHeuteButton.addEventListener("click", function () {
   benachrichtigungenAnzeigen();
   aktivitaetenAnzeigen();
   syncAnzeigeAktualisieren();
+  vorschlagAnzeigen();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
@@ -250,6 +255,7 @@ kalenderWeiterButton.addEventListener("click", function () {
   benachrichtigungenAnzeigen();
   aktivitaetenAnzeigen();
   syncAnzeigeAktualisieren();
+  vorschlagAnzeigen();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1767,6 +1773,7 @@ aktivitaetLeerenButton.addEventListener("click", function () {
   aktivitaetenSpeichern();
   aktivitaetenAnzeigen();
   syncAnzeigeAktualisieren();
+  vorschlagAnzeigen();
 });
 
 
@@ -1901,4 +1908,74 @@ function syncAnzeigeAktualisieren() {
   syncStatus.textContent = "Synchronisiert";
   syncZeitpunkt.textContent = `Letzte Synchronisierung: ${gespeicherterZeitpunkt}`;
   syncDetails.textContent = `${aufgaben.length} Projekte und ${aktivitaeten.length} Aktivitäten lokal gesichert.`;
+}
+
+
+vorschlagAktualisierenButton.addEventListener("click", function () {
+  vorschlagAnzeigen();
+  aktivitaetHinzufuegen("Vorschlag aktualisiert", "Die intelligente Empfehlung wurde neu berechnet.");
+  aktivitaetenAnzeigen();
+});
+
+function vorschlagAnzeigen() {
+  const workspaceAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace && aufgabe.status !== "archiv";
+  });
+
+  if (workspaceAufgaben.length === 0) {
+    vorschlagInhalt.innerHTML = "Keine aktiven Projekte in diesem Workspace vorhanden.";
+    return;
+  }
+
+  const offeneFavoriten = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.favorit && aufgabe.fortschritt < 100;
+  });
+
+  if (offeneFavoriten.length > 0) {
+    const projekt = offeneFavoriten[0];
+    vorschlagInhalt.innerHTML = `<strong>${projekt.text}</strong><br>Dieses Projekt ist angeheftet und noch nicht abgeschlossen. Es wäre sinnvoll, hier als Nächstes weiterzumachen.`;
+    return;
+  }
+
+  const fastFertigeProjekte = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.fortschritt >= 70 && aufgabe.fortschritt < 100;
+  });
+
+  if (fastFertigeProjekte.length > 0) {
+    const projekt = fastFertigeProjekte[0];
+    vorschlagInhalt.innerHTML = `<strong>${projekt.text}</strong><br>Dieses Projekt ist schon weit fortgeschritten. Ein Abschluss wäre ein guter nächster Schritt.`;
+    return;
+  }
+
+  const offeneMeilensteine = workspaceAufgaben.filter(function (aufgabe) {
+    return Array.isArray(aufgabe.meilensteine) && aufgabe.meilensteine.some(function (punkt) {
+      return !punkt.erledigt;
+    });
+  });
+
+  if (offeneMeilensteine.length > 0) {
+    const projekt = offeneMeilensteine[0];
+    vorschlagInhalt.innerHTML = `<strong>${projekt.text}</strong><br>Dieses Projekt hat offene Meilensteine. Es lohnt sich, dort den nächsten Meilenstein abzuschließen.`;
+    return;
+  }
+
+  const offeneChecklisten = workspaceAufgaben.filter(function (aufgabe) {
+    return Array.isArray(aufgabe.checkliste) && aufgabe.checkliste.some(function (punkt) {
+      return !punkt.erledigt;
+    });
+  });
+
+  if (offeneChecklisten.length > 0) {
+    const projekt = offeneChecklisten[0];
+    vorschlagInhalt.innerHTML = `<strong>${projekt.text}</strong><br>Dieses Projekt hat offene Checklistenpunkte. Arbeite am besten einen kleinen Punkt ab.`;
+    return;
+  }
+
+  const niedrigsterFortschritt = workspaceAufgaben
+    .slice()
+    .sort(function (a, b) {
+      return a.fortschritt - b.fortschritt;
+    })[0];
+
+  vorschlagInhalt.innerHTML = `<strong>${niedrigsterFortschritt.text}</strong><br>Dieses Projekt hat aktuell den niedrigsten Fortschritt. Ein kleiner Startschritt würde helfen.`;
 }

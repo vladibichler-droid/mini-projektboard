@@ -2018,3 +2018,76 @@ h1 {
     width: 100%;
   }
 }
+
+/* Version 26 – Intelligente Vorschläge */
+
+.vorschlag-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.vorschlag-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.vorschlag-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#vorschlagTitel {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+#vorschlagAktualisierenButton {
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(167, 139, 250, 0.14);
+  color: #ede9fe;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.vorschlag-inhalt {
+  padding: 10px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.vorschlag-inhalt strong {
+  color: #f8fafc;
+}
+
+@media (max-width: 850px) {
+  .vorschlag-kopf {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #vorschlagAktualisierenButton {
+    width: 100%;
+  }
+}
