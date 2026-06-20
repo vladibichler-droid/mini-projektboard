@@ -1943,3 +1943,78 @@ h1 {
     width: 100%;
   }
 }
+
+/* Version 25 – Synchronisierung */
+
+.sync-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.sync-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.sync-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#syncStatus {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+#syncButton {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+#syncButton:hover {
+  transform: translateY(-1px);
+}
+
+.sync-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#syncZeitpunkt,
+#syncDetails {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .sync-kopf {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #syncButton {
+    width: 100%;
+  }
+}

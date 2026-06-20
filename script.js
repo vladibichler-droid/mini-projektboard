@@ -85,6 +85,11 @@ const aktivitaetTitel = document.querySelector("#aktivitaetTitel");
 const aktivitaetListe = document.querySelector("#aktivitaetListe");
 const aktivitaetLeerenButton = document.querySelector("#aktivitaetLeerenButton");
 
+const syncStatus = document.querySelector("#syncStatus");
+const syncButton = document.querySelector("#syncButton");
+const syncZeitpunkt = document.querySelector("#syncZeitpunkt");
+const syncDetails = document.querySelector("#syncDetails");
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -92,6 +97,7 @@ let timerIntervall = null;
 const speicherName = "miniProjektboardAufgabenV12";
 const aktiverWorkspaceSpeicherName = "miniProjektboardAktiverWorkspace";
 const aktivitaetSpeicherName = "miniProjektboardAktivitaeten";
+const syncSpeicherName = "miniProjektboardSyncZeitpunkt";
 
 let aktiverWorkspace = "programmieren";
 let aufgaben = [];
@@ -226,6 +232,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   kalenderAnzeigen();
   benachrichtigungenAnzeigen();
   aktivitaetenAnzeigen();
+  syncAnzeigeAktualisieren();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -234,6 +241,7 @@ kalenderHeuteButton.addEventListener("click", function () {
   kalenderAnzeigen();
   benachrichtigungenAnzeigen();
   aktivitaetenAnzeigen();
+  syncAnzeigeAktualisieren();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
@@ -241,6 +249,7 @@ kalenderWeiterButton.addEventListener("click", function () {
   kalenderAnzeigen();
   benachrichtigungenAnzeigen();
   aktivitaetenAnzeigen();
+  syncAnzeigeAktualisieren();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1757,6 +1766,7 @@ aktivitaetLeerenButton.addEventListener("click", function () {
 
   aktivitaetenSpeichern();
   aktivitaetenAnzeigen();
+  syncAnzeigeAktualisieren();
 });
 
 
@@ -1863,4 +1873,32 @@ function initialenErstellen(name) {
       return teil[0].toUpperCase();
     })
     .join("");
+}
+
+
+syncButton.addEventListener("click", function () {
+  const zeitpunkt = new Date().toLocaleString("de-DE");
+  localStorage.setItem(syncSpeicherName, zeitpunkt);
+
+  syncStatus.textContent = "Synchronisiert";
+  syncZeitpunkt.textContent = `Letzte Synchronisierung: ${zeitpunkt}`;
+  syncDetails.textContent = `${aufgaben.length} Projekte und ${aktivitaeten.length} Aktivitäten lokal gesichert.`;
+
+  aktivitaetHinzufuegen("Synchronisierung", "Die lokalen Projektdaten wurden synchronisiert.");
+  aktivitaetenAnzeigen();
+});
+
+function syncAnzeigeAktualisieren() {
+  const gespeicherterZeitpunkt = localStorage.getItem(syncSpeicherName);
+
+  if (gespeicherterZeitpunkt === null) {
+    syncStatus.textContent = "Lokal gespeichert";
+    syncZeitpunkt.textContent = "Noch nicht synchronisiert";
+    syncDetails.textContent = "Daten werden aktuell im Browser gespeichert.";
+    return;
+  }
+
+  syncStatus.textContent = "Synchronisiert";
+  syncZeitpunkt.textContent = `Letzte Synchronisierung: ${gespeicherterZeitpunkt}`;
+  syncDetails.textContent = `${aufgaben.length} Projekte und ${aktivitaeten.length} Aktivitäten lokal gesichert.`;
 }
