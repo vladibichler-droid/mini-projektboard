@@ -2216,3 +2216,59 @@ h1 {
 .spalte.drag-over .spalten-kopf h2 {
   color: #cffafe;
 }
+
+/* Version 29 – Automatisierungsregeln */
+
+.automation-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.automation-kopf {
+  margin-bottom: 10px;
+}
+
+.automation-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.automation-kopf strong {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.automation-liste {
+  display: grid;
+  gap: 8px;
+}
+
+.automation-eintrag {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.automation-eintrag input {
+  width: 16px;
+  height: 16px;
+  accent-color: #22c55e;
+}

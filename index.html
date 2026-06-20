@@ -159,6 +159,32 @@
         </button>
       </div>
 
+      <section class="automation-dashboard">
+        <div class="automation-kopf">
+          <div>
+            <span class="automation-label">Automatisierungsregeln</span>
+            <strong>Regeln aktiv</strong>
+          </div>
+        </div>
+
+        <div class="automation-liste">
+          <label class="automation-eintrag">
+            <input type="checkbox" id="autoFertig" checked>
+            <span>100 % Fortschritt ⇒ automatisch „Fertig“</span>
+          </label>
+
+          <label class="automation-eintrag">
+            <input type="checkbox" id="autoArbeit" checked>
+            <span>Fortschritt zwischen 1 % und 99 % ⇒ automatisch „In Arbeit“</span>
+          </label>
+
+          <label class="automation-eintrag">
+            <input type="checkbox" id="autoOffen" checked>
+            <span>0 % Fortschritt ⇒ automatisch „Offen“</span>
+          </label>
+        </div>
+      </section>
+
       <section class="vorschlag-dashboard">
         <div class="vorschlag-kopf">
           <div>
@@ -484,7 +510,7 @@
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 28 · Drag & Drop Deluxe integriert</p>
+      <p>Version 29 · Automatisierungsregeln integriert</p>
     </footer>
 
   </main>

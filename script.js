@@ -98,6 +98,10 @@ const syncDetails = document.querySelector("#syncDetails");
 const vorschlagInhalt = document.querySelector("#vorschlagInhalt");
 const vorschlagAktualisierenButton = document.querySelector("#vorschlagAktualisierenButton");
 
+const autoFertig = document.querySelector("#autoFertig");
+const autoArbeit = document.querySelector("#autoArbeit");
+const autoOffen = document.querySelector("#autoOffen");
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -538,17 +542,7 @@ function fortschrittAendern(aufgabenId, schritt) {
         );
       }
 
-      if (aufgabe.fortschritt === 100 && aufgabe.status !== "archiv") {
-        aufgabe.status = "fertig";
-      }
-
-      if (aufgabe.fortschritt > 0 && aufgabe.fortschritt < 100 && aufgabe.status !== "archiv") {
-        aufgabe.status = "arbeit";
-      }
-
-      if (aufgabe.fortschritt === 0 && aufgabe.status !== "archiv") {
-        aufgabe.status = "offen";
-      }
+      automatisierungsregelnAnwenden(aufgabe);
     }
   });
 
@@ -2156,3 +2150,68 @@ function aufgabePerDragVerschieben(aufgabenId, neuerStatus) {
   aufgabenSpeichern();
   boardAnzeigen();
 }
+
+
+function automatisierungsregelnAnwenden(aufgabe) {
+  if (!aufgabe || aufgabe.status === "archiv") {
+    return;
+  }
+
+  const alterStatus = aufgabe.status;
+  let neuerStatus = alterStatus;
+
+  if (autoFertig.checked && aufgabe.fortschritt === 100) {
+    neuerStatus = "fertig";
+  }
+
+  if (autoArbeit.checked && aufgabe.fortschritt > 0 && aufgabe.fortschritt < 100) {
+    neuerStatus = "arbeit";
+  }
+
+  if (autoOffen.checked && aufgabe.fortschritt === 0) {
+    neuerStatus = "offen";
+  }
+
+  if (alterStatus !== neuerStatus) {
+    aufgabe.status = neuerStatus;
+
+    timelineEintragHinzufuegen(
+      aufgabe,
+      "Automatisierungsregel ausgeführt",
+      `${statusTexte[alterStatus]} → ${statusTexte[neuerStatus]}`
+    );
+  }
+}
+
+autoFertig.addEventListener("change", function () {
+  aktivitaetHinzufuegen(
+    "Automatisierungsregel geändert",
+    autoFertig.checked
+      ? "100 %-Regel wurde aktiviert."
+      : "100 %-Regel wurde deaktiviert."
+  );
+
+  aktivitaetenAnzeigen();
+});
+
+autoArbeit.addEventListener("change", function () {
+  aktivitaetHinzufuegen(
+    "Automatisierungsregel geändert",
+    autoArbeit.checked
+      ? "In-Arbeit-Regel wurde aktiviert."
+      : "In-Arbeit-Regel wurde deaktiviert."
+  );
+
+  aktivitaetenAnzeigen();
+});
+
+autoOffen.addEventListener("change", function () {
+  aktivitaetHinzufuegen(
+    "Automatisierungsregel geändert",
+    autoOffen.checked
+      ? "Offen-Regel wurde aktiviert."
+      : "Offen-Regel wurde deaktiviert."
+  );
+
+  aktivitaetenAnzeigen();
+});
