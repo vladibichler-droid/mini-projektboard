@@ -126,6 +126,11 @@ const statTimer = document.querySelector("#statTimer");
 const statLinks = document.querySelector("#statLinks");
 const statTeam = document.querySelector("#statTeam");
 
+const projektStatDurchschnitt = document.querySelector("#projektStatDurchschnitt");
+const projektStatAbgeschlossen = document.querySelector("#projektStatAbgeschlossen");
+const projektStatAktiv = document.querySelector("#projektStatAktiv");
+const projektStatArchiv = document.querySelector("#projektStatArchiv");
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -274,6 +279,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   historyAnzeigen();
   wochenplanAnzeigen();
   miniStatistikenAktualisieren();
+  projektStatistikenAktualisieren();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -288,6 +294,7 @@ kalenderHeuteButton.addEventListener("click", function () {
   historyAnzeigen();
   wochenplanAnzeigen();
   miniStatistikenAktualisieren();
+  projektStatistikenAktualisieren();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
@@ -301,6 +308,7 @@ kalenderWeiterButton.addEventListener("click", function () {
   historyAnzeigen();
   wochenplanAnzeigen();
   miniStatistikenAktualisieren();
+  projektStatistikenAktualisieren();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1827,6 +1835,7 @@ aktivitaetLeerenButton.addEventListener("click", function () {
   historyAnzeigen();
   wochenplanAnzeigen();
   miniStatistikenAktualisieren();
+  projektStatistikenAktualisieren();
 });
 
 
@@ -2422,4 +2431,30 @@ function miniStatistikenAktualisieren() {
   statTimer.textContent = aktiveTimer;
   statLinks.textContent = links;
   statTeam.textContent = team;
+}
+
+
+function projektStatistikenAktualisieren() {
+  const workspaceAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace;
+  });
+
+  const durchschnitt = durchschnittlichenFortschrittBerechnen(workspaceAufgaben);
+
+  const abgeschlossen = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "fertig";
+  }).length;
+
+  const aktiv = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status !== "archiv";
+  }).length;
+
+  const archiv = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "archiv";
+  }).length;
+
+  projektStatDurchschnitt.textContent = `${durchschnitt} %`;
+  projektStatAbgeschlossen.textContent = abgeschlossen;
+  projektStatAktiv.textContent = aktiv;
+  projektStatArchiv.textContent = archiv;
 }
