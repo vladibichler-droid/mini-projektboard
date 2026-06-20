@@ -102,6 +102,11 @@ const autoFertig = document.querySelector("#autoFertig");
 const autoArbeit = document.querySelector("#autoArbeit");
 const autoOffen = document.querySelector("#autoOffen");
 
+const chartOffen = document.querySelector("#chartOffen");
+const chartArbeit = document.querySelector("#chartArbeit");
+const chartFertig = document.querySelector("#chartFertig");
+const chartArchiv = document.querySelector("#chartArchiv");
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -246,6 +251,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   aktivitaetenAnzeigen();
   syncAnzeigeAktualisieren();
   vorschlagAnzeigen();
+  miniChartsAktualisieren();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -256,6 +262,7 @@ kalenderHeuteButton.addEventListener("click", function () {
   aktivitaetenAnzeigen();
   syncAnzeigeAktualisieren();
   vorschlagAnzeigen();
+  miniChartsAktualisieren();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
@@ -265,6 +272,7 @@ kalenderWeiterButton.addEventListener("click", function () {
   aktivitaetenAnzeigen();
   syncAnzeigeAktualisieren();
   vorschlagAnzeigen();
+  miniChartsAktualisieren();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1787,6 +1795,7 @@ aktivitaetLeerenButton.addEventListener("click", function () {
   aktivitaetenAnzeigen();
   syncAnzeigeAktualisieren();
   vorschlagAnzeigen();
+  miniChartsAktualisieren();
 });
 
 
@@ -2215,3 +2224,33 @@ autoOffen.addEventListener("change", function () {
 
   aktivitaetenAnzeigen();
 });
+
+
+function miniChartsAktualisieren() {
+  const workspaceAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace;
+  });
+
+  const gesamt = workspaceAufgaben.length || 1;
+
+  const offen = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "offen";
+  }).length;
+
+  const arbeit = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "arbeit";
+  }).length;
+
+  const fertig = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "fertig";
+  }).length;
+
+  const archiv = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "archiv";
+  }).length;
+
+  chartOffen.style.width = `${Math.round((offen / gesamt) * 100)}%`;
+  chartArbeit.style.width = `${Math.round((arbeit / gesamt) * 100)}%`;
+  chartFertig.style.width = `${Math.round((fertig / gesamt) * 100)}%`;
+  chartArchiv.style.width = `${Math.round((archiv / gesamt) * 100)}%`;
+}

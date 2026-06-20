@@ -2319,3 +2319,78 @@ textarea:focus-visible {
     scroll-behavior: auto !important;
   }
 }
+
+/* Version 31 – Live-Dashboard mit Mini-Charts */
+
+.mini-chart-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.mini-chart-kopf {
+  margin-bottom: 10px;
+}
+
+.mini-chart-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.mini-chart-kopf strong {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.mini-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.mini-chart-karte {
+  padding: 10px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.mini-chart-karte span {
+  display: block;
+  margin-bottom: 7px;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.mini-chart-balken {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(8, 15, 31, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.mini-chart-fuellung {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #22d3ee, #22c55e);
+  transition: width 0.25s ease;
+}
+
+@media (max-width: 850px) {
+  .mini-chart-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
