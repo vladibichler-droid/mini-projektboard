@@ -258,6 +258,31 @@
             <textarea id="detailNotiz" placeholder="Notiz zu diesem Projekt eingeben ..."></textarea>
           </div>
 
+          <div class="detail-zeit-box">
+            <div class="detail-zeit-kopf">
+              <span class="detail-label">Zeiterfassung</span>
+              <strong id="detailZeitGesamt">0 Min.</strong>
+            </div>
+
+            <div class="zeit-status" id="zeitStatus">
+              Kein Timer aktiv
+            </div>
+
+            <div class="zeit-aktionen">
+              <button type="button" id="zeitStartButton">
+                Start
+              </button>
+
+              <button type="button" id="zeitStopButton">
+                Stop
+              </button>
+
+              <button type="button" id="zeitZuruecksetzenButton">
+                Zurücksetzen
+              </button>
+            </div>
+          </div>
+
           <div class="detail-checkliste-box">
             <div class="detail-checkliste-kopf">
               <span class="detail-label">Checkliste</span>
@@ -290,7 +315,7 @@
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 16 · Checklisten pro Projekt integriert</p>
+      <p>Version 17 · Zeiterfassung integriert</p>
     </footer>
 
   </main>

@@ -54,7 +54,14 @@ const checklistenEingabe = document.querySelector("#checklistenEingabe");
 const checklistenListe = document.querySelector("#checklistenListe");
 const detailChecklisteFortschritt = document.querySelector("#detailChecklisteFortschritt");
 
+const detailZeitGesamt = document.querySelector("#detailZeitGesamt");
+const zeitStatus = document.querySelector("#zeitStatus");
+const zeitStartButton = document.querySelector("#zeitStartButton");
+const zeitStopButton = document.querySelector("#zeitStopButton");
+const zeitZuruecksetzenButton = document.querySelector("#zeitZuruecksetzenButton");
+
 let detailProjektId = null;
+let timerIntervall = null;
 
 
 const speicherName = "miniProjektboardAufgabenV12";
@@ -832,7 +839,9 @@ function aufgabeReparieren(aufgabe) {
     erstelltAm: aufgabe.erstelltAm || heutigesDatumErstellen(),
     favorit: aufgabe.favorit || false,
     workspace: aufgabe.workspace || "programmieren",
-    checkliste: Array.isArray(aufgabe.checkliste) ? aufgabe.checkliste : []
+    checkliste: Array.isArray(aufgabe.checkliste) ? aufgabe.checkliste : [],
+    zeitSekunden: typeof aufgabe.zeitSekunden === "number" ? aufgabe.zeitSekunden : 0,
+    zeitStart: aufgabe.zeitStart || null
   };
 
   if (typeof reparierteAufgabe.fortschritt !== "number") {
@@ -929,10 +938,12 @@ function detailFensterOeffnen(aufgabenId) {
   detailNotiz.value = aufgabe.notiz || "";
 
   checklisteAnzeigen(aufgabe);
+  zeiterfassungAnzeigen(aufgabe);
   detailOverlay.classList.add("aktiv");
 }
 
 function detailFensterSchliessen() {
+  timerAktualisierungStoppen();
   detailOverlay.classList.remove("aktiv");
   detailProjektId = null;
 }
@@ -1071,3 +1082,116 @@ checklistenFormular.addEventListener("submit", function (event) {
   aufgabenSpeichern();
   checklisteAnzeigen(aufgabe);
 });
+
+
+function zeiterfassungAnzeigen(aufgabe) {
+  timerAktualisierungStoppen();
+
+  detailZeitGesamt.textContent = zeitFormatieren(gesamteZeitSekundenBerechnen(aufgabe));
+
+  if (aufgabe.zeitStart) {
+    zeitStatus.textContent = "Timer läuft";
+    zeitStatus.classList.add("aktiv");
+    timerIntervall = setInterval(function () {
+      detailZeitGesamt.textContent = zeitFormatieren(gesamteZeitSekundenBerechnen(aufgabe));
+    }, 1000);
+  } else {
+    zeitStatus.textContent = "Kein Timer aktiv";
+    zeitStatus.classList.remove("aktiv");
+  }
+}
+
+function timerAktualisierungStoppen() {
+  if (timerIntervall !== null) {
+    clearInterval(timerIntervall);
+    timerIntervall = null;
+  }
+}
+
+function aktuelleDetailAufgabeErmitteln() {
+  if (detailProjektId === null) {
+    return null;
+  }
+
+  return aufgaben.find(function (eintrag) {
+    return eintrag.id === detailProjektId;
+  }) || null;
+}
+
+zeitStartButton.addEventListener("click", function () {
+  const aufgabe = aktuelleDetailAufgabeErmitteln();
+
+  if (!aufgabe || aufgabe.zeitStart) {
+    return;
+  }
+
+  aufgabe.zeitStart = new Date().toISOString();
+  aufgabenSpeichern();
+  zeiterfassungAnzeigen(aufgabe);
+});
+
+zeitStopButton.addEventListener("click", function () {
+  const aufgabe = aktuelleDetailAufgabeErmitteln();
+
+  if (!aufgabe || !aufgabe.zeitStart) {
+    return;
+  }
+
+  const startZeit = new Date(aufgabe.zeitStart).getTime();
+  const jetzt = Date.now();
+  const differenzSekunden = Math.max(0, Math.floor((jetzt - startZeit) / 1000));
+
+  aufgabe.zeitSekunden = (aufgabe.zeitSekunden || 0) + differenzSekunden;
+  aufgabe.zeitStart = null;
+
+  aufgabenSpeichern();
+  zeiterfassungAnzeigen(aufgabe);
+});
+
+zeitZuruecksetzenButton.addEventListener("click", function () {
+  const aufgabe = aktuelleDetailAufgabeErmitteln();
+
+  if (!aufgabe) {
+    return;
+  }
+
+  const bestaetigung = confirm("Möchtest du die gespeicherte Zeit wirklich zurücksetzen?");
+
+  if (bestaetigung === false) {
+    return;
+  }
+
+  aufgabe.zeitSekunden = 0;
+  aufgabe.zeitStart = null;
+
+  aufgabenSpeichern();
+  zeiterfassungAnzeigen(aufgabe);
+});
+
+function gesamteZeitSekundenBerechnen(aufgabe) {
+  let sekunden = aufgabe.zeitSekunden || 0;
+
+  if (aufgabe.zeitStart) {
+    const startZeit = new Date(aufgabe.zeitStart).getTime();
+    const jetzt = Date.now();
+    sekunden += Math.max(0, Math.floor((jetzt - startZeit) / 1000));
+  }
+
+  return sekunden;
+}
+
+function zeitFormatieren(sekundenGesamt) {
+  const stunden = Math.floor(sekundenGesamt / 3600);
+  const minuten = Math.floor((sekundenGesamt % 3600) / 60);
+  const sekunden = sekundenGesamt % 60;
+
+  if (stunden > 0) {
+    return `${stunden} Std. ${minuten} Min.`;
+  }
+
+  if (minuten > 0) {
+    return `${minuten} Min. ${sekunden} Sek.`;
+  }
+
+  return `${sekunden} Sek.`;
+}
