@@ -2091,3 +2091,104 @@ h1 {
     width: 100%;
   }
 }
+
+/* Version 27 – Tag-System */
+
+.detail-tag-box {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.detail-tag-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+#detailTagAnzahl {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.tag-formular {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.tag-formular input {
+  flex: 1;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 14px;
+  padding: 9px 11px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+  font-size: 12px;
+  outline: none;
+}
+
+.tag-formular input::placeholder {
+  color: #94a3b8;
+}
+
+.tag-formular button {
+  border: none;
+  border-radius: 14px;
+  padding: 9px 11px;
+  background: linear-gradient(135deg, #22d3ee, #a78bfa);
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.tag-liste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  color: #cffafe;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.tag-loeschen {
+  border: none;
+  background: transparent;
+  color: #fecdd3;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.tag-leer {
+  padding: 9px;
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.22);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .tag-formular {
+    flex-direction: column;
+  }
+
+  .tag-formular button {
+    width: 100%;
+  }
+}

@@ -77,6 +77,11 @@ const teamNameEingabe = document.querySelector("#teamNameEingabe");
 const teamListe = document.querySelector("#teamListe");
 const detailTeamAnzahl = document.querySelector("#detailTeamAnzahl");
 
+const tagFormular = document.querySelector("#tagFormular");
+const tagEingabe = document.querySelector("#tagEingabe");
+const tagListe = document.querySelector("#tagListe");
+const detailTagAnzahl = document.querySelector("#detailTagAnzahl");
+
 const benachrichtigungTitel = document.querySelector("#benachrichtigungTitel");
 const benachrichtigungListe = document.querySelector("#benachrichtigungListe");
 const benachrichtigungenAktualisierenButton = document.querySelector("#benachrichtigungenAktualisierenButton");
@@ -922,7 +927,8 @@ function aufgabeReparieren(aufgabe) {
     timeline: Array.isArray(aufgabe.timeline) ? aufgabe.timeline : [],
     meilensteine: Array.isArray(aufgabe.meilensteine) ? aufgabe.meilensteine : [],
     links: Array.isArray(aufgabe.links) ? aufgabe.links : [],
-    team: Array.isArray(aufgabe.team) ? aufgabe.team : []
+    team: Array.isArray(aufgabe.team) ? aufgabe.team : [],
+    tags: Array.isArray(aufgabe.tags) ? aufgabe.tags : []
   };
 
   if (typeof reparierteAufgabe.fortschritt !== "number") {
@@ -1021,6 +1027,7 @@ function detailFensterOeffnen(aufgabenId) {
 
   checklisteAnzeigen(aufgabe);
   zeiterfassungAnzeigen(aufgabe);
+  tagsAnzeigen(aufgabe);
   teamAnzeigen(aufgabe);
   linksAnzeigen(aufgabe);
   meilensteineAnzeigen(aufgabe);
@@ -1979,3 +1986,100 @@ function vorschlagAnzeigen() {
 
   vorschlagInhalt.innerHTML = `<strong>${niedrigsterFortschritt.text}</strong><br>Dieses Projekt hat aktuell den niedrigsten Fortschritt. Ein kleiner Startschritt würde helfen.`;
 }
+
+
+function tagsAnzeigen(aufgabe) {
+  tagListe.innerHTML = "";
+
+  if (!Array.isArray(aufgabe.tags)) {
+    aufgabe.tags = [];
+  }
+
+  detailTagAnzahl.textContent = `${aufgabe.tags.length} Tags`;
+
+  if (aufgabe.tags.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("tag-leer");
+    leer.textContent = "Noch keine Tags hinterlegt.";
+    tagListe.appendChild(leer);
+    return;
+  }
+
+  aufgabe.tags.forEach(function (tag) {
+    const chip = document.createElement("div");
+    chip.classList.add("tag-chip");
+
+    const name = document.createElement("span");
+    name.textContent = `#${tag.name}`;
+
+    const loeschen = document.createElement("button");
+    loeschen.type = "button";
+    loeschen.classList.add("tag-loeschen");
+    loeschen.textContent = "×";
+
+    loeschen.addEventListener("click", function () {
+      aufgabe.tags = aufgabe.tags.filter(function (eintrag) {
+        return eintrag.id !== tag.id;
+      });
+
+      timelineEintragHinzufuegen(aufgabe, "Tag entfernt", tag.name);
+
+      aufgabenSpeichern();
+      tagsAnzeigen(aufgabe);
+      timelineAnzeigen(aufgabe);
+    });
+
+    chip.appendChild(name);
+    chip.appendChild(loeschen);
+
+    tagListe.appendChild(chip);
+  });
+}
+
+tagFormular.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  if (detailProjektId === null) {
+    return;
+  }
+
+  const aufgabe = aufgaben.find(function (eintrag) {
+    return eintrag.id === detailProjektId;
+  });
+
+  if (!aufgabe) {
+    return;
+  }
+
+  const tagName = tagEingabe.value.trim().replace(/^#/, "");
+
+  if (tagName === "") {
+    return;
+  }
+
+  if (!Array.isArray(aufgabe.tags)) {
+    aufgabe.tags = [];
+  }
+
+  const existiertSchon = aufgabe.tags.some(function (tag) {
+    return tag.name.toLowerCase() === tagName.toLowerCase();
+  });
+
+  if (existiertSchon) {
+    tagEingabe.value = "";
+    return;
+  }
+
+  aufgabe.tags.push({
+    id: neueIdErstellen(),
+    name: tagName
+  });
+
+  tagEingabe.value = "";
+
+  timelineEintragHinzufuegen(aufgabe, "Tag hinzugefügt", tagName);
+
+  aufgabenSpeichern();
+  tagsAnzeigen(aufgabe);
+  timelineAnzeigen(aufgabe);
+});
