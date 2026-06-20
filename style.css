@@ -2926,3 +2926,125 @@ body.kompakt-aktiv .karten-aktionen button {
 #wissensdatenbankSpeichern:hover {
   transform: translateY(-1px);
 }
+
+/* Version 39 – Ressourcenverwaltung */
+
+.ressourcen-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.ressourcen-kopf {
+  margin-bottom: 10px;
+}
+
+.ressourcen-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.ressourcen-kopf strong {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.ressourcen-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ressourcen-form input {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 14px;
+  padding: 9px 11px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+  font-size: 12px;
+  outline: none;
+}
+
+.ressourcen-form button {
+  border: none;
+  border-radius: 14px;
+  padding: 9px 11px;
+  background: linear-gradient(135deg, #22c55e, #2563eb);
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.ressourcen-liste {
+  display: grid;
+  gap: 7px;
+}
+
+.ressourcen-eintrag {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 9px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.ressourcen-eintrag a {
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.ressourcen-eintrag span {
+  display: block;
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+  word-break: break-all;
+}
+
+.ressourcen-loeschen {
+  border: 1px solid rgba(251, 113, 133, 0.26);
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: rgba(251, 113, 133, 0.12);
+  color: #fecdd3;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.ressourcen-leer {
+  padding: 9px;
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.22);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .ressourcen-form {
+    grid-template-columns: 1fr;
+  }
+
+  .ressourcen-eintrag {
+    grid-template-columns: 1fr;
+  }
+}

@@ -145,6 +145,13 @@ const wissensdatenbankText = document.querySelector("#wissensdatenbankText");
 const wissensdatenbankSpeichern = document.querySelector("#wissensdatenbankSpeichern");
 const wissensdatenbankSpeicherName = "miniProjektboardWissensdatenbank";
 
+const ressourceTitel = document.querySelector("#ressourceTitel");
+const ressourceUrl = document.querySelector("#ressourceUrl");
+const ressourceHinzufuegen = document.querySelector("#ressourceHinzufuegen");
+const ressourcenListe = document.querySelector("#ressourcenListe");
+const ressourcenSpeicherName = "miniProjektboardRessourcen";
+
+let ressourcen = [];
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -1070,6 +1077,8 @@ aktivenWorkspaceLaden();
 aktivitaetenLaden();
 aufgabenLaden();
 wissensdatenbankLaden();
+ressourcenLaden();
+ressourcenAnzeigen();
 kompaktModusLaden();
 workspaceAnzeigeAktualisieren();
 dragUndDropEinrichten();
@@ -2553,5 +2562,98 @@ wissensdatenbankSpeichern.addEventListener("click", function () {
     "Die globale Wissensdatenbank wurde aktualisiert."
   );
 
+  aktivitaetenAnzeigen();
+});
+
+
+function ressourcenLaden() {
+  const gespeicherteRessourcen = localStorage.getItem(ressourcenSpeicherName);
+
+  if (gespeicherteRessourcen === null) {
+    ressourcen = [];
+    return;
+  }
+
+  ressourcen = JSON.parse(gespeicherteRessourcen);
+}
+
+function ressourcenSpeichern() {
+  localStorage.setItem(ressourcenSpeicherName, JSON.stringify(ressourcen));
+}
+
+function ressourcenAnzeigen() {
+  ressourcenListe.innerHTML = "";
+
+  if (ressourcen.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("ressourcen-leer");
+    leer.textContent = "Noch keine Ressourcen gespeichert.";
+    ressourcenListe.appendChild(leer);
+    return;
+  }
+
+  ressourcen.forEach(function (ressource) {
+    const eintrag = document.createElement("div");
+    eintrag.classList.add("ressourcen-eintrag");
+
+    const info = document.createElement("div");
+
+    const link = document.createElement("a");
+    link.href = ressource.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = ressource.titel;
+
+    const url = document.createElement("span");
+    url.textContent = ressource.url;
+
+    const loeschen = document.createElement("button");
+    loeschen.type = "button";
+    loeschen.classList.add("ressourcen-loeschen");
+    loeschen.textContent = "Löschen";
+
+    loeschen.addEventListener("click", function () {
+      ressourcen = ressourcen.filter(function (eintrag) {
+        return eintrag.id !== ressource.id;
+      });
+
+      ressourcenSpeichern();
+      ressourcenAnzeigen();
+
+      aktivitaetHinzufuegen("Ressource gelöscht", ressource.titel);
+      aktivitaetenAnzeigen();
+    });
+
+    info.appendChild(link);
+    info.appendChild(url);
+
+    eintrag.appendChild(info);
+    eintrag.appendChild(loeschen);
+
+    ressourcenListe.appendChild(eintrag);
+  });
+}
+
+ressourceHinzufuegen.addEventListener("click", function () {
+  const titel = ressourceTitel.value.trim();
+  const url = ressourceUrl.value.trim();
+
+  if (titel === "" || url === "") {
+    return;
+  }
+
+  ressourcen.push({
+    id: neueIdErstellen(),
+    titel: titel,
+    url: url
+  });
+
+  ressourceTitel.value = "";
+  ressourceUrl.value = "";
+
+  ressourcenSpeichern();
+  ressourcenAnzeigen();
+
+  aktivitaetHinzufuegen("Ressource hinzugefügt", titel);
   aktivitaetenAnzeigen();
 });
