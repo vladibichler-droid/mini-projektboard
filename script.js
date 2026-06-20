@@ -72,6 +72,11 @@ const linkUrlEingabe = document.querySelector("#linkUrlEingabe");
 const linkListe = document.querySelector("#linkListe");
 const detailLinkAnzahl = document.querySelector("#detailLinkAnzahl");
 
+const teamFormular = document.querySelector("#teamFormular");
+const teamNameEingabe = document.querySelector("#teamNameEingabe");
+const teamListe = document.querySelector("#teamListe");
+const detailTeamAnzahl = document.querySelector("#detailTeamAnzahl");
+
 const benachrichtigungTitel = document.querySelector("#benachrichtigungTitel");
 const benachrichtigungListe = document.querySelector("#benachrichtigungListe");
 const benachrichtigungenAktualisierenButton = document.querySelector("#benachrichtigungenAktualisierenButton");
@@ -901,7 +906,8 @@ function aufgabeReparieren(aufgabe) {
     zeitStart: aufgabe.zeitStart || null,
     timeline: Array.isArray(aufgabe.timeline) ? aufgabe.timeline : [],
     meilensteine: Array.isArray(aufgabe.meilensteine) ? aufgabe.meilensteine : [],
-    links: Array.isArray(aufgabe.links) ? aufgabe.links : []
+    links: Array.isArray(aufgabe.links) ? aufgabe.links : [],
+    team: Array.isArray(aufgabe.team) ? aufgabe.team : []
   };
 
   if (typeof reparierteAufgabe.fortschritt !== "number") {
@@ -1000,6 +1006,7 @@ function detailFensterOeffnen(aufgabenId) {
 
   checklisteAnzeigen(aufgabe);
   zeiterfassungAnzeigen(aufgabe);
+  teamAnzeigen(aufgabe);
   linksAnzeigen(aufgabe);
   meilensteineAnzeigen(aufgabe);
   timelineAnzeigen(aufgabe);
@@ -1751,3 +1758,109 @@ aktivitaetLeerenButton.addEventListener("click", function () {
   aktivitaetenSpeichern();
   aktivitaetenAnzeigen();
 });
+
+
+function teamAnzeigen(aufgabe) {
+  teamListe.innerHTML = "";
+
+  if (!Array.isArray(aufgabe.team)) {
+    aufgabe.team = [];
+  }
+
+  detailTeamAnzahl.textContent = `${aufgabe.team.length} Personen`;
+
+  if (aufgabe.team.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("team-leer");
+    leer.textContent = "Noch keine Personen oder Rollen zugeordnet.";
+    teamListe.appendChild(leer);
+    return;
+  }
+
+  aufgabe.team.forEach(function (person) {
+    const eintrag = document.createElement("div");
+    eintrag.classList.add("team-person");
+
+    const avatar = document.createElement("span");
+    avatar.classList.add("team-avatar");
+    avatar.textContent = initialenErstellen(person.name);
+
+    const name = document.createElement("span");
+    name.textContent = person.name;
+
+    const loeschen = document.createElement("button");
+    loeschen.type = "button";
+    loeschen.classList.add("team-loeschen");
+    loeschen.textContent = "×";
+
+    loeschen.addEventListener("click", function () {
+      aufgabe.team = aufgabe.team.filter(function (eintrag) {
+        return eintrag.id !== person.id;
+      });
+
+      timelineEintragHinzufuegen(aufgabe, "Teammitglied entfernt", person.name);
+
+      aufgabenSpeichern();
+      teamAnzeigen(aufgabe);
+      timelineAnzeigen(aufgabe);
+    });
+
+    eintrag.appendChild(avatar);
+    eintrag.appendChild(name);
+    eintrag.appendChild(loeschen);
+
+    teamListe.appendChild(eintrag);
+  });
+}
+
+teamFormular.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  if (detailProjektId === null) {
+    return;
+  }
+
+  const aufgabe = aufgaben.find(function (eintrag) {
+    return eintrag.id === detailProjektId;
+  });
+
+  if (!aufgabe) {
+    return;
+  }
+
+  const name = teamNameEingabe.value.trim();
+
+  if (name === "") {
+    return;
+  }
+
+  if (!Array.isArray(aufgabe.team)) {
+    aufgabe.team = [];
+  }
+
+  aufgabe.team.push({
+    id: neueIdErstellen(),
+    name: name
+  });
+
+  teamNameEingabe.value = "";
+
+  timelineEintragHinzufuegen(aufgabe, "Teammitglied hinzugefügt", name);
+
+  aufgabenSpeichern();
+  teamAnzeigen(aufgabe);
+  timelineAnzeigen(aufgabe);
+});
+
+function initialenErstellen(name) {
+  return name
+    .split(" ")
+    .filter(function (teil) {
+      return teil.trim() !== "";
+    })
+    .slice(0, 2)
+    .map(function (teil) {
+      return teil[0].toUpperCase();
+    })
+    .join("");
+}

@@ -1829,3 +1829,117 @@ h1 {
   font-size: 11px;
   font-weight: 800;
 }
+
+/* Version 23 – Team-Modus */
+
+.detail-team-box {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.detail-team-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+#detailTeamAnzahl {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.team-formular {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.team-formular input {
+  flex: 1;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 14px;
+  padding: 9px 11px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+  font-size: 12px;
+  outline: none;
+}
+
+.team-formular input::placeholder {
+  color: #94a3b8;
+}
+
+.team-formular button {
+  border: none;
+  border-radius: 14px;
+  padding: 9px 11px;
+  background: linear-gradient(135deg, #a78bfa, #2563eb);
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.team-liste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.team-person {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: rgba(96, 165, 250, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.22);
+  color: #dbeafe;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.team-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(167, 139, 250, 0.28);
+  color: #ede9fe;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.team-loeschen {
+  border: none;
+  background: transparent;
+  color: #fecdd3;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.team-leer {
+  padding: 9px;
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.22);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .team-formular {
+    flex-direction: column;
+  }
+
+  .team-formular button {
+    width: 100%;
+  }
+}
