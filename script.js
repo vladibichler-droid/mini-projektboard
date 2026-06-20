@@ -109,6 +109,16 @@ const chartArchiv = document.querySelector("#chartArchiv");
 
 const historyListe = document.querySelector("#historyListe");
 
+const wochenTageElemente = {
+  montag: document.querySelector("#montag"),
+  dienstag: document.querySelector("#dienstag"),
+  mittwoch: document.querySelector("#mittwoch"),
+  donnerstag: document.querySelector("#donnerstag"),
+  freitag: document.querySelector("#freitag"),
+  samstag: document.querySelector("#samstag"),
+  sonntag: document.querySelector("#sonntag")
+};
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -255,6 +265,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   vorschlagAnzeigen();
   miniChartsAktualisieren();
   historyAnzeigen();
+  wochenplanAnzeigen();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -267,6 +278,7 @@ kalenderHeuteButton.addEventListener("click", function () {
   vorschlagAnzeigen();
   miniChartsAktualisieren();
   historyAnzeigen();
+  wochenplanAnzeigen();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
@@ -278,6 +290,7 @@ kalenderWeiterButton.addEventListener("click", function () {
   vorschlagAnzeigen();
   miniChartsAktualisieren();
   historyAnzeigen();
+  wochenplanAnzeigen();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1802,6 +1815,7 @@ aktivitaetLeerenButton.addEventListener("click", function () {
   vorschlagAnzeigen();
   miniChartsAktualisieren();
   historyAnzeigen();
+  wochenplanAnzeigen();
 });
 
 
@@ -2298,4 +2312,51 @@ function historyAnzeigen() {
 
     historyListe.appendChild(element);
   });
+}
+
+
+function wochenplanAnzeigen() {
+  const tage = {
+    montag: [],
+    dienstag: [],
+    mittwoch: [],
+    donnerstag: [],
+    freitag: [],
+    samstag: [],
+    sonntag: []
+  };
+
+  const aktiveAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace && aufgabe.status !== "archiv";
+  });
+
+  aktiveAufgaben.forEach(function (aufgabe, index) {
+    const tagNamen = Object.keys(tage);
+    const tag = tagNamen[index % tagNamen.length];
+    tage[tag].push(aufgabe);
+  });
+
+  Object.keys(wochenTageElemente).forEach(function (tag) {
+    const element = wochenTageElemente[tag];
+    element.innerHTML = `<strong>${tagNameFormatieren(tag)}</strong>`;
+
+    if (tage[tag].length === 0) {
+      const leer = document.createElement("span");
+      leer.classList.add("wochenplan-leer");
+      leer.textContent = "Keine Aufgaben";
+      element.appendChild(leer);
+      return;
+    }
+
+    tage[tag].slice(0, 3).forEach(function (aufgabe) {
+      const eintrag = document.createElement("div");
+      eintrag.classList.add("wochenplan-aufgabe");
+      eintrag.textContent = aufgabe.text;
+      element.appendChild(eintrag);
+    });
+  });
+}
+
+function tagNameFormatieren(tag) {
+  return tag.charAt(0).toUpperCase() + tag.slice(1);
 }
