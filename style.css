@@ -1524,3 +1524,98 @@ h1 {
     width: 100%;
   }
 }
+
+/* Version 20 – Benachrichtigungszentrale */
+
+.benachrichtigung-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.benachrichtigung-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.benachrichtigung-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#benachrichtigungTitel {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+#benachrichtigungenAktualisierenButton {
+  border: 1px solid rgba(96, 165, 250, 0.22);
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(96, 165, 250, 0.13);
+  color: #dbeafe;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.benachrichtigung-liste {
+  display: grid;
+  gap: 7px;
+}
+
+.benachrichtigung-eintrag {
+  padding: 9px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.benachrichtigung-eintrag strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.benachrichtigung-eintrag span {
+  display: block;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.benachrichtigung-eintrag.warnung {
+  border-color: rgba(250, 204, 21, 0.26);
+}
+
+.benachrichtigung-eintrag.erfolg {
+  border-color: rgba(74, 222, 128, 0.26);
+}
+
+.benachrichtigung-eintrag.info {
+  border-color: rgba(96, 165, 250, 0.26);
+}
+
+.benachrichtigung-leer {
+  padding: 9px;
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.22);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}

@@ -66,6 +66,10 @@ const meilensteinEingabe = document.querySelector("#meilensteinEingabe");
 const meilensteinListe = document.querySelector("#meilensteinListe");
 const detailMeilensteinFortschritt = document.querySelector("#detailMeilensteinFortschritt");
 
+const benachrichtigungTitel = document.querySelector("#benachrichtigungTitel");
+const benachrichtigungListe = document.querySelector("#benachrichtigungListe");
+const benachrichtigungenAktualisierenButton = document.querySelector("#benachrichtigungenAktualisierenButton");
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -202,17 +206,20 @@ workspaceButtons.forEach(function (button) {
 kalenderZurueckButton.addEventListener("click", function () {
   kalenderDatum.setMonth(kalenderDatum.getMonth() - 1);
   kalenderAnzeigen();
+  benachrichtigungenAnzeigen();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
   kalenderDatum = new Date();
   ausgewaehltesDatum = datumAlsSchluessel(new Date());
   kalenderAnzeigen();
+  benachrichtigungenAnzeigen();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
   kalenderDatum.setMonth(kalenderDatum.getMonth() + 1);
   kalenderAnzeigen();
+  benachrichtigungenAnzeigen();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1431,3 +1438,105 @@ meilensteinFormular.addEventListener("submit", function (event) {
   meilensteineAnzeigen(aufgabe);
   timelineAnzeigen(aufgabe);
 });
+
+
+benachrichtigungenAktualisierenButton.addEventListener("click", function () {
+  benachrichtigungenAnzeigen();
+});
+
+function benachrichtigungenAnzeigen() {
+  benachrichtigungListe.innerHTML = "";
+
+  const hinweise = benachrichtigungenErmitteln();
+
+  benachrichtigungTitel.textContent = `${hinweise.length} Hinweise`;
+
+  if (hinweise.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("benachrichtigung-leer");
+    leer.textContent = "Keine aktuellen Hinweise im aktiven Workspace.";
+    benachrichtigungListe.appendChild(leer);
+    return;
+  }
+
+  hinweise.forEach(function (hinweis) {
+    const eintrag = document.createElement("div");
+    eintrag.classList.add("benachrichtigung-eintrag");
+    eintrag.classList.add(hinweis.typ);
+
+    const titel = document.createElement("strong");
+    titel.textContent = hinweis.titel;
+
+    const text = document.createElement("span");
+    text.textContent = hinweis.text;
+
+    eintrag.appendChild(titel);
+    eintrag.appendChild(text);
+
+    benachrichtigungListe.appendChild(eintrag);
+  });
+}
+
+function benachrichtigungenErmitteln() {
+  const workspaceAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace;
+  });
+
+  const hinweise = [];
+
+  workspaceAufgaben.forEach(function (aufgabe) {
+    if (aufgabe.fortschritt === 100 && aufgabe.status !== "archiv") {
+      hinweise.push({
+        typ: "erfolg",
+        titel: "Projekt abgeschlossen",
+        text: `${aufgabe.text} ist bei 100 %. Prüfe, ob es archiviert werden kann.`
+      });
+    }
+
+    if (aufgabe.favorit) {
+      hinweise.push({
+        typ: "info",
+        titel: "Favorit im Fokus",
+        text: `${aufgabe.text} ist angeheftet und sollte regelmäßig geprüft werden.`
+      });
+    }
+
+    const offeneChecklisten = Array.isArray(aufgabe.checkliste)
+      ? aufgabe.checkliste.filter(function (punkt) {
+          return !punkt.erledigt;
+        }).length
+      : 0;
+
+    if (offeneChecklisten > 0) {
+      hinweise.push({
+        typ: "warnung",
+        titel: "Offene Checkliste",
+        text: `${aufgabe.text} hat ${offeneChecklisten} offene Checklistenpunkte.`
+      });
+    }
+
+    const offeneMeilensteine = Array.isArray(aufgabe.meilensteine)
+      ? aufgabe.meilensteine.filter(function (punkt) {
+          return !punkt.erledigt;
+        }).length
+      : 0;
+
+    if (offeneMeilensteine > 0) {
+      hinweise.push({
+        typ: "warnung",
+        titel: "Offene Meilensteine",
+        text: `${aufgabe.text} hat ${offeneMeilensteine} offene Meilensteine.`
+      });
+    }
+
+    if (aufgabe.zeitStart) {
+      hinweise.push({
+        typ: "info",
+        titel: "Timer läuft",
+        text: `Bei ${aufgabe.text} läuft aktuell die Zeiterfassung.`
+      });
+    }
+  });
+
+  return hinweise.slice(0, 8);
+}
