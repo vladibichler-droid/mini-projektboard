@@ -1619,3 +1619,127 @@ h1 {
   font-size: 11px;
   font-weight: 800;
 }
+
+/* Version 21 – Dateien- und Linkverwaltung */
+
+.detail-link-box {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.detail-link-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+#detailLinkAnzahl {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.link-formular {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.link-formular input {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 14px;
+  padding: 9px 11px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+  font-size: 12px;
+  outline: none;
+}
+
+.link-formular input::placeholder {
+  color: #94a3b8;
+}
+
+.link-formular button {
+  border: none;
+  border-radius: 14px;
+  padding: 9px 11px;
+  background: linear-gradient(135deg, #22d3ee, #2563eb);
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.link-liste {
+  display: grid;
+  gap: 7px;
+}
+
+.link-eintrag {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 9px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.link-eintrag a {
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.link-eintrag a:hover {
+  text-decoration: underline;
+}
+
+.link-eintrag span {
+  display: block;
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+  word-break: break-all;
+}
+
+.link-loeschen {
+  border: 1px solid rgba(251, 113, 133, 0.26);
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: rgba(251, 113, 133, 0.12);
+  color: #fecdd3;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.link-leer {
+  padding: 9px;
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.22);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .link-formular {
+    grid-template-columns: 1fr;
+  }
+
+  .link-formular button {
+    width: 100%;
+  }
+
+  .link-eintrag {
+    grid-template-columns: 1fr;
+  }
+}

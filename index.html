@@ -320,6 +320,35 @@
             <div class="checklisten-liste" id="checklistenListe"></div>
           </div>
 
+          <div class="detail-link-box">
+            <div class="detail-link-kopf">
+              <span class="detail-label">Dateien & Links</span>
+              <span id="detailLinkAnzahl">0 Einträge</span>
+            </div>
+
+            <form class="link-formular" id="linkFormular">
+              <input
+                type="text"
+                id="linkTitelEingabe"
+                placeholder="Titel, z. B. GitHub Repository ..."
+                autocomplete="off"
+              >
+
+              <input
+                type="url"
+                id="linkUrlEingabe"
+                placeholder="Link, z. B. https://github.com/..."
+                autocomplete="off"
+              >
+
+              <button type="submit">
+                Hinzufügen
+              </button>
+            </form>
+
+            <div class="link-liste" id="linkListe"></div>
+          </div>
+
           <div class="detail-meilenstein-box">
             <div class="detail-meilenstein-kopf">
               <span class="detail-label">Meilensteine</span>
@@ -361,7 +390,7 @@
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 20 · Benachrichtigungszentrale integriert</p>
+      <p>Version 21 · Dateien- und Linkverwaltung integriert</p>
     </footer>
 
   </main>

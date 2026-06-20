@@ -66,6 +66,12 @@ const meilensteinEingabe = document.querySelector("#meilensteinEingabe");
 const meilensteinListe = document.querySelector("#meilensteinListe");
 const detailMeilensteinFortschritt = document.querySelector("#detailMeilensteinFortschritt");
 
+const linkFormular = document.querySelector("#linkFormular");
+const linkTitelEingabe = document.querySelector("#linkTitelEingabe");
+const linkUrlEingabe = document.querySelector("#linkUrlEingabe");
+const linkListe = document.querySelector("#linkListe");
+const detailLinkAnzahl = document.querySelector("#detailLinkAnzahl");
+
 const benachrichtigungTitel = document.querySelector("#benachrichtigungTitel");
 const benachrichtigungListe = document.querySelector("#benachrichtigungListe");
 const benachrichtigungenAktualisierenButton = document.querySelector("#benachrichtigungenAktualisierenButton");
@@ -884,7 +890,8 @@ function aufgabeReparieren(aufgabe) {
     zeitSekunden: typeof aufgabe.zeitSekunden === "number" ? aufgabe.zeitSekunden : 0,
     zeitStart: aufgabe.zeitStart || null,
     timeline: Array.isArray(aufgabe.timeline) ? aufgabe.timeline : [],
-    meilensteine: Array.isArray(aufgabe.meilensteine) ? aufgabe.meilensteine : []
+    meilensteine: Array.isArray(aufgabe.meilensteine) ? aufgabe.meilensteine : [],
+    links: Array.isArray(aufgabe.links) ? aufgabe.links : []
   };
 
   if (typeof reparierteAufgabe.fortschritt !== "number") {
@@ -982,6 +989,7 @@ function detailFensterOeffnen(aufgabenId) {
 
   checklisteAnzeigen(aufgabe);
   zeiterfassungAnzeigen(aufgabe);
+  linksAnzeigen(aufgabe);
   meilensteineAnzeigen(aufgabe);
   timelineAnzeigen(aufgabe);
   detailOverlay.classList.add("aktiv");
@@ -1540,3 +1548,105 @@ function benachrichtigungenErmitteln() {
 
   return hinweise.slice(0, 8);
 }
+
+
+function linksAnzeigen(aufgabe) {
+  linkListe.innerHTML = "";
+
+  if (!Array.isArray(aufgabe.links)) {
+    aufgabe.links = [];
+  }
+
+  detailLinkAnzahl.textContent = `${aufgabe.links.length} Einträge`;
+
+  if (aufgabe.links.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("link-leer");
+    leer.textContent = "Noch keine Dateien oder Links hinterlegt.";
+    linkListe.appendChild(leer);
+    return;
+  }
+
+  aufgabe.links.forEach(function (link) {
+    const eintrag = document.createElement("div");
+    eintrag.classList.add("link-eintrag");
+
+    const info = document.createElement("div");
+
+    const linkElement = document.createElement("a");
+    linkElement.href = link.url;
+    linkElement.target = "_blank";
+    linkElement.rel = "noopener noreferrer";
+    linkElement.textContent = link.titel;
+
+    const urlText = document.createElement("span");
+    urlText.textContent = link.url;
+
+    const loeschen = document.createElement("button");
+    loeschen.type = "button";
+    loeschen.classList.add("link-loeschen");
+    loeschen.textContent = "Löschen";
+
+    loeschen.addEventListener("click", function () {
+      aufgabe.links = aufgabe.links.filter(function (eintrag) {
+        return eintrag.id !== link.id;
+      });
+
+      timelineEintragHinzufuegen(aufgabe, "Link gelöscht", link.titel);
+
+      aufgabenSpeichern();
+      linksAnzeigen(aufgabe);
+      timelineAnzeigen(aufgabe);
+    });
+
+    info.appendChild(linkElement);
+    info.appendChild(urlText);
+
+    eintrag.appendChild(info);
+    eintrag.appendChild(loeschen);
+
+    linkListe.appendChild(eintrag);
+  });
+}
+
+linkFormular.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  if (detailProjektId === null) {
+    return;
+  }
+
+  const aufgabe = aufgaben.find(function (eintrag) {
+    return eintrag.id === detailProjektId;
+  });
+
+  if (!aufgabe) {
+    return;
+  }
+
+  const titel = linkTitelEingabe.value.trim();
+  const url = linkUrlEingabe.value.trim();
+
+  if (titel === "" || url === "") {
+    return;
+  }
+
+  if (!Array.isArray(aufgabe.links)) {
+    aufgabe.links = [];
+  }
+
+  aufgabe.links.push({
+    id: neueIdErstellen(),
+    titel: titel,
+    url: url
+  });
+
+  linkTitelEingabe.value = "";
+  linkUrlEingabe.value = "";
+
+  timelineEintragHinzufuegen(aufgabe, "Link hinzugefügt", titel);
+
+  aufgabenSpeichern();
+  linksAnzeigen(aufgabe);
+  timelineAnzeigen(aufgabe);
+});
