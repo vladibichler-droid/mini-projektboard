@@ -305,6 +305,28 @@
             <div class="checklisten-liste" id="checklistenListe"></div>
           </div>
 
+          <div class="detail-meilenstein-box">
+            <div class="detail-meilenstein-kopf">
+              <span class="detail-label">Meilensteine</span>
+              <span id="detailMeilensteinFortschritt">0 / 0 erledigt</span>
+            </div>
+
+            <form class="meilenstein-formular" id="meilensteinFormular">
+              <input
+                type="text"
+                id="meilensteinEingabe"
+                placeholder="Neuen Meilenstein hinzufügen ..."
+                autocomplete="off"
+              >
+
+              <button type="submit">
+                Hinzufügen
+              </button>
+            </form>
+
+            <div class="meilenstein-liste" id="meilensteinListe"></div>
+          </div>
+
           <div class="detail-timeline-box">
             <div class="detail-timeline-kopf">
               <span class="detail-label">Projekt-Timeline</span>
@@ -324,7 +346,7 @@
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 18 · Projekt-Timeline integriert</p>
+      <p>Version 19 · Meilensteine integriert</p>
     </footer>
 
   </main>

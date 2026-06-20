@@ -61,6 +61,10 @@ const zeitStopButton = document.querySelector("#zeitStopButton");
 const zeitZuruecksetzenButton = document.querySelector("#zeitZuruecksetzenButton");
 const timelineListe = document.querySelector("#timelineListe");
 const detailTimelineAnzahl = document.querySelector("#detailTimelineAnzahl");
+const meilensteinFormular = document.querySelector("#meilensteinFormular");
+const meilensteinEingabe = document.querySelector("#meilensteinEingabe");
+const meilensteinListe = document.querySelector("#meilensteinListe");
+const detailMeilensteinFortschritt = document.querySelector("#detailMeilensteinFortschritt");
 
 let detailProjektId = null;
 let timerIntervall = null;
@@ -872,7 +876,8 @@ function aufgabeReparieren(aufgabe) {
     checkliste: Array.isArray(aufgabe.checkliste) ? aufgabe.checkliste : [],
     zeitSekunden: typeof aufgabe.zeitSekunden === "number" ? aufgabe.zeitSekunden : 0,
     zeitStart: aufgabe.zeitStart || null,
-    timeline: Array.isArray(aufgabe.timeline) ? aufgabe.timeline : []
+    timeline: Array.isArray(aufgabe.timeline) ? aufgabe.timeline : [],
+    meilensteine: Array.isArray(aufgabe.meilensteine) ? aufgabe.meilensteine : []
   };
 
   if (typeof reparierteAufgabe.fortschritt !== "number") {
@@ -970,6 +975,7 @@ function detailFensterOeffnen(aufgabenId) {
 
   checklisteAnzeigen(aufgabe);
   zeiterfassungAnzeigen(aufgabe);
+  meilensteineAnzeigen(aufgabe);
   timelineAnzeigen(aufgabe);
   detailOverlay.classList.add("aktiv");
 }
@@ -1303,3 +1309,125 @@ function timelineAnzeigen(aufgabe) {
     timelineListe.appendChild(element);
   });
 }
+
+
+function meilensteineAnzeigen(aufgabe) {
+  meilensteinListe.innerHTML = "";
+
+  if (!Array.isArray(aufgabe.meilensteine)) {
+    aufgabe.meilensteine = [];
+  }
+
+  const erledigt = aufgabe.meilensteine.filter(function (punkt) {
+    return punkt.erledigt;
+  }).length;
+
+  detailMeilensteinFortschritt.textContent = `${erledigt} / ${aufgabe.meilensteine.length} erledigt`;
+
+  if (aufgabe.meilensteine.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("meilenstein-leer");
+    leer.textContent = "Noch keine Meilensteine vorhanden.";
+    meilensteinListe.appendChild(leer);
+    return;
+  }
+
+  aufgabe.meilensteine.forEach(function (punkt) {
+    const eintrag = document.createElement("div");
+    eintrag.classList.add("meilenstein-punkt");
+
+    if (punkt.erledigt) {
+      eintrag.classList.add("erledigt");
+    }
+
+    const checkbox = document.createElement("button");
+    checkbox.type = "button";
+    checkbox.classList.add("meilenstein-checkbox");
+    checkbox.textContent = punkt.erledigt ? "✓" : "";
+
+    if (punkt.erledigt) {
+      checkbox.classList.add("aktiv");
+    }
+
+    checkbox.addEventListener("click", function () {
+      punkt.erledigt = !punkt.erledigt;
+
+      timelineEintragHinzufuegen(
+        aufgabe,
+        punkt.erledigt ? "Meilenstein erledigt" : "Meilenstein wieder geöffnet",
+        punkt.text
+      );
+
+      aufgabenSpeichern();
+      meilensteineAnzeigen(aufgabe);
+      timelineAnzeigen(aufgabe);
+    });
+
+    const text = document.createElement("span");
+    text.classList.add("meilenstein-text");
+    text.textContent = punkt.text;
+
+    const loeschen = document.createElement("button");
+    loeschen.type = "button";
+    loeschen.classList.add("meilenstein-loeschen");
+    loeschen.textContent = "Löschen";
+
+    loeschen.addEventListener("click", function () {
+      aufgabe.meilensteine = aufgabe.meilensteine.filter(function (eintrag) {
+        return eintrag.id !== punkt.id;
+      });
+
+      timelineEintragHinzufuegen(aufgabe, "Meilenstein gelöscht", punkt.text);
+
+      aufgabenSpeichern();
+      meilensteineAnzeigen(aufgabe);
+      timelineAnzeigen(aufgabe);
+    });
+
+    eintrag.appendChild(checkbox);
+    eintrag.appendChild(text);
+    eintrag.appendChild(loeschen);
+
+    meilensteinListe.appendChild(eintrag);
+  });
+}
+
+meilensteinFormular.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  if (detailProjektId === null) {
+    return;
+  }
+
+  const aufgabe = aufgaben.find(function (eintrag) {
+    return eintrag.id === detailProjektId;
+  });
+
+  if (!aufgabe) {
+    return;
+  }
+
+  const text = meilensteinEingabe.value.trim();
+
+  if (text === "") {
+    return;
+  }
+
+  if (!Array.isArray(aufgabe.meilensteine)) {
+    aufgabe.meilensteine = [];
+  }
+
+  aufgabe.meilensteine.push({
+    id: neueIdErstellen(),
+    text: text,
+    erledigt: false
+  });
+
+  meilensteinEingabe.value = "";
+
+  timelineEintragHinzufuegen(aufgabe, "Meilenstein hinzugefügt", text);
+
+  aufgabenSpeichern();
+  meilensteineAnzeigen(aufgabe);
+  timelineAnzeigen(aufgabe);
+});
