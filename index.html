@@ -83,6 +83,39 @@
 
       </section>
 
+      <section class="kalender-dashboard">
+        <div class="kalender-kopf">
+          <div>
+            <span class="kalender-label">Kalenderansicht</span>
+            <strong id="kalenderMonatTitel">Monat</strong>
+          </div>
+
+          <div class="kalender-aktionen">
+            <button type="button" id="kalenderZurueckButton">←</button>
+            <button type="button" id="kalenderHeuteButton">Heute</button>
+            <button type="button" id="kalenderWeiterButton">→</button>
+          </div>
+        </div>
+
+        <div class="kalender-wochentage">
+          <span>Mo</span>
+          <span>Di</span>
+          <span>Mi</span>
+          <span>Do</span>
+          <span>Fr</span>
+          <span>Sa</span>
+          <span>So</span>
+        </div>
+
+        <div class="kalender-grid" id="kalenderGrid"></div>
+
+        <div class="kalender-auswahl">
+          <span class="kalender-label">Ausgewählter Tag</span>
+          <strong id="kalenderAuswahlTitel">Kein Tag ausgewählt</strong>
+          <div id="kalenderAufgabenListe" class="kalender-aufgaben-liste"></div>
+        </div>
+      </section>
+
       <form class="eingabe-bereich" id="aufgabenFormular">
         <input
           type="text"
@@ -185,7 +218,7 @@
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 13 · Analyse-Dashboard integriert</p>
+      <p>Version 14 · Kalenderansicht integriert</p>
     </footer>
 
   </main>

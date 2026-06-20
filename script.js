@@ -32,11 +32,21 @@ const analyseProduktivitaet = document.querySelector("#analyseProduktivitaet");
 const analyseStatus = document.querySelector("#analyseStatus");
 const analyseBalken = document.querySelector("#analyseBalken");
 
+const kalenderMonatTitel = document.querySelector("#kalenderMonatTitel");
+const kalenderZurueckButton = document.querySelector("#kalenderZurueckButton");
+const kalenderHeuteButton = document.querySelector("#kalenderHeuteButton");
+const kalenderWeiterButton = document.querySelector("#kalenderWeiterButton");
+const kalenderGrid = document.querySelector("#kalenderGrid");
+const kalenderAuswahlTitel = document.querySelector("#kalenderAuswahlTitel");
+const kalenderAufgabenListe = document.querySelector("#kalenderAufgabenListe");
+
 const speicherName = "miniProjektboardAufgabenV12";
 const aktiverWorkspaceSpeicherName = "miniProjektboardAktiverWorkspace";
 
 let aktiverWorkspace = "programmieren";
 let aufgaben = [];
+let kalenderDatum = new Date();
+let ausgewaehltesDatum = null;
 
 const workspaces = {
   programmieren: "💻 Programmieren",
@@ -148,9 +158,26 @@ workspaceButtons.forEach(function (button) {
     aktiverWorkspace = button.dataset.workspace;
     localStorage.setItem(aktiverWorkspaceSpeicherName, aktiverWorkspace);
     sucheEingabe.value = "";
+    ausgewaehltesDatum = null;
     workspaceAnzeigeAktualisieren();
     boardAnzeigen();
   });
+});
+
+kalenderZurueckButton.addEventListener("click", function () {
+  kalenderDatum.setMonth(kalenderDatum.getMonth() - 1);
+  kalenderAnzeigen();
+});
+
+kalenderHeuteButton.addEventListener("click", function () {
+  kalenderDatum = new Date();
+  ausgewaehltesDatum = datumAlsSchluessel(new Date());
+  kalenderAnzeigen();
+});
+
+kalenderWeiterButton.addEventListener("click", function () {
+  kalenderDatum.setMonth(kalenderDatum.getMonth() + 1);
+  kalenderAnzeigen();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -514,6 +541,155 @@ function zaehlerAktualisieren(sichtbareAufgaben) {
 
   fortschrittUebersicht.textContent = `${durchschnitt} %`;
   fortschrittUebersichtBalken.style.width = `${durchschnitt}%`;
+}
+
+function kalenderAnzeigen() {
+  kalenderGrid.innerHTML = "";
+
+  const jahr = kalenderDatum.getFullYear();
+  const monat = kalenderDatum.getMonth();
+
+  kalenderMonatTitel.textContent = kalenderDatum.toLocaleDateString("de-DE", {
+    month: "long",
+    year: "numeric"
+  });
+
+  const ersterTag = new Date(jahr, monat, 1);
+  const letzterTag = new Date(jahr, monat + 1, 0);
+  const startOffset = (ersterTag.getDay() + 6) % 7;
+  const tageImMonat = letzterTag.getDate();
+
+  const zellenAnzahl = Math.ceil((startOffset + tageImMonat) / 7) * 7;
+  const startDatum = new Date(jahr, monat, 1 - startOffset);
+
+  for (let index = 0; index < zellenAnzahl; index++) {
+    const aktuellerTag = new Date(startDatum);
+    aktuellerTag.setDate(startDatum.getDate() + index);
+
+    const tagElement = kalenderTagErstellen(aktuellerTag, monat);
+    kalenderGrid.appendChild(tagElement);
+  }
+
+  kalenderAuswahlAnzeigen();
+}
+
+function kalenderTagErstellen(datum, aktuellerMonat) {
+  const tag = document.createElement("button");
+  tag.type = "button";
+  tag.classList.add("kalender-tag");
+
+  const datumSchluessel = datumAlsSchluessel(datum);
+  const aufgabenAmTag = aufgabenFuerKalendertag(datumSchluessel);
+
+  if (datum.getMonth() !== aktuellerMonat) {
+    tag.classList.add("inaktiv");
+  }
+
+  if (datumSchluessel === datumAlsSchluessel(new Date())) {
+    tag.classList.add("heute");
+  }
+
+  if (datumSchluessel === ausgewaehltesDatum) {
+    tag.classList.add("ausgewaehlt");
+  }
+
+  const zahl = document.createElement("span");
+  zahl.classList.add("kalender-tag-zahl");
+  zahl.textContent = datum.getDate();
+
+  tag.appendChild(zahl);
+
+  if (aufgabenAmTag.length > 0) {
+    const marker = document.createElement("span");
+    marker.classList.add("kalender-marker");
+    marker.textContent = aufgabenAmTag.length;
+    tag.appendChild(marker);
+  }
+
+  tag.addEventListener("click", function () {
+    ausgewaehltesDatum = datumSchluessel;
+    kalenderAnzeigen();
+  });
+
+  return tag;
+}
+
+function kalenderAuswahlAnzeigen() {
+  kalenderAufgabenListe.innerHTML = "";
+
+  if (ausgewaehltesDatum === null) {
+    kalenderAuswahlTitel.textContent = "Kein Tag ausgewählt";
+
+    const leer = document.createElement("div");
+    leer.classList.add("kalender-leer");
+    leer.textContent = "Wähle einen Tag aus, um passende Aufgaben zu sehen.";
+    kalenderAufgabenListe.appendChild(leer);
+    return;
+  }
+
+  kalenderAuswahlTitel.textContent = datumSchluesselFormatieren(ausgewaehltesDatum);
+
+  const aufgabenAmTag = aufgabenFuerKalendertag(ausgewaehltesDatum);
+
+  if (aufgabenAmTag.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("kalender-leer");
+    leer.textContent = "Keine Aufgaben an diesem Tag.";
+    kalenderAufgabenListe.appendChild(leer);
+    return;
+  }
+
+  aufgabenAmTag.forEach(function (aufgabe) {
+    const eintrag = document.createElement("div");
+    eintrag.classList.add("kalender-aufgabe");
+
+    const titel = document.createElement("strong");
+    titel.textContent = aufgabe.text;
+
+    const details = document.createElement("span");
+    details.textContent = `${statusTexte[aufgabe.status]} · ${aufgabe.fortschritt} %`;
+
+    eintrag.appendChild(titel);
+    eintrag.appendChild(details);
+    kalenderAufgabenListe.appendChild(eintrag);
+  });
+}
+
+function aufgabenFuerKalendertag(datumSchluessel) {
+  return aufgaben.filter(function (aufgabe) {
+    return (
+      aufgabe.workspace === aktiverWorkspace &&
+      datumAusDeutschemFormat(aufgabe.erstelltAm) === datumSchluessel
+    );
+  });
+}
+
+function datumAlsSchluessel(datum) {
+  const jahr = datum.getFullYear();
+  const monat = String(datum.getMonth() + 1).padStart(2, "0");
+  const tag = String(datum.getDate()).padStart(2, "0");
+
+  return `${jahr}-${monat}-${tag}`;
+}
+
+function datumAusDeutschemFormat(datumText) {
+  const teile = datumText.split(".");
+
+  if (teile.length !== 3) {
+    return "";
+  }
+
+  return `${teile[2]}-${teile[1]}-${teile[0]}`;
+}
+
+function datumSchluesselFormatieren(datumSchluessel) {
+  const teile = datumSchluessel.split("-");
+
+  if (teile.length !== 3) {
+    return datumSchluessel;
+  }
+
+  return `${teile[2]}.${teile[1]}.${teile[0]}`;
 }
 
 function analyseDashboardAktualisieren() {

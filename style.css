@@ -758,3 +758,182 @@ h1 {
     flex-direction: column;
   }
 }
+
+/* Version 14 – Kalenderansicht */
+
+.kalender-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.kalender-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.kalender-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#kalenderMonatTitel,
+#kalenderAuswahlTitel {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.kalender-aktionen {
+  display: flex;
+  gap: 7px;
+}
+
+.kalender-aktionen button {
+  border: 1px solid rgba(96, 165, 250, 0.22);
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(96, 165, 250, 0.13);
+  color: #dbeafe;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.16s ease;
+}
+
+.kalender-aktionen button:hover {
+  background: rgba(96, 165, 250, 0.28);
+  transform: translateY(-1px);
+}
+
+.kalender-wochentage,
+.kalender-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 7px;
+}
+
+.kalender-wochentage {
+  margin-bottom: 7px;
+}
+
+.kalender-wochentage span {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.kalender-tag {
+  min-height: 54px;
+  padding: 7px;
+  border-radius: 15px;
+  background: rgba(15, 23, 42, 0.52);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: 0.16s ease;
+}
+
+.kalender-tag:hover {
+  border-color: rgba(96, 165, 250, 0.32);
+  background: rgba(96, 165, 250, 0.1);
+  transform: translateY(-1px);
+}
+
+.kalender-tag.inaktiv {
+  opacity: 0.35;
+}
+
+.kalender-tag.heute {
+  border-color: rgba(34, 211, 238, 0.55);
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.12);
+}
+
+.kalender-tag.ausgewaehlt {
+  border-color: rgba(250, 204, 21, 0.55);
+  box-shadow: 0 0 18px rgba(250, 204, 21, 0.14);
+}
+
+.kalender-tag-zahl {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.kalender-marker {
+  display: inline-block;
+  min-width: 18px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.16);
+  border: 1px solid rgba(74, 222, 128, 0.24);
+  color: #bbf7d0;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.kalender-auswahl {
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.kalender-aufgaben-liste {
+  margin-top: 9px;
+  display: grid;
+  gap: 7px;
+}
+
+.kalender-aufgabe {
+  padding: 9px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.46);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.kalender-aufgabe strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #f8fafc;
+  font-size: 12px;
+}
+
+.kalender-leer {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .kalender-kopf {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .kalender-tag {
+    min-height: 46px;
+    padding: 6px;
+  }
+
+  .kalender-wochentage,
+  .kalender-grid {
+    gap: 5px;
+  }
+}
