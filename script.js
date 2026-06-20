@@ -59,6 +59,8 @@ const zeitStatus = document.querySelector("#zeitStatus");
 const zeitStartButton = document.querySelector("#zeitStartButton");
 const zeitStopButton = document.querySelector("#zeitStopButton");
 const zeitZuruecksetzenButton = document.querySelector("#zeitZuruecksetzenButton");
+const timelineListe = document.querySelector("#timelineListe");
+const detailTimelineAnzahl = document.querySelector("#detailTimelineAnzahl");
 
 let detailProjektId = null;
 let timerIntervall = null;
@@ -144,15 +146,20 @@ aufgabenFormular.addEventListener("submit", function (event) {
     return;
   }
 
-  aufgaben.push({
+  const neueAufgabe = {
     id: neueIdErstellen(),
     text: aufgabenText,
     status: "offen",
     fortschritt: 0,
     erstelltAm: heutigesDatumErstellen(),
     favorit: false,
-    workspace: aktiverWorkspace
-  });
+    workspace: aktiverWorkspace,
+    timeline: []
+  };
+
+  timelineEintragHinzufuegen(neueAufgabe, "Projekt erstellt", "Das Projekt wurde im Workspace angelegt.");
+
+  aufgaben.push(neueAufgabe);
 
   aufgabenEingabe.value = "";
   aufgabenEingabe.focus();
@@ -379,6 +386,11 @@ function favoritButtonErstellen(aufgabe) {
 
   button.addEventListener("click", function () {
     aufgabe.favorit = !aufgabe.favorit;
+    timelineEintragHinzufuegen(
+      aufgabe,
+      aufgabe.favorit ? "Favorit gesetzt" : "Favorit entfernt",
+      aufgabe.favorit ? "Das Projekt wurde angeheftet." : "Das Projekt ist nicht mehr angeheftet."
+    );
     aufgabenSpeichern();
     boardAnzeigen();
   });
@@ -452,7 +464,16 @@ function fortschrittSteuerungErstellen(aufgabe) {
 function fortschrittAendern(aufgabenId, schritt) {
   aufgaben.forEach(function (aufgabe) {
     if (aufgabe.id === aufgabenId) {
+      const alterFortschritt = aufgabe.fortschritt;
       aufgabe.fortschritt = wertBegrenzen(aufgabe.fortschritt + schritt);
+
+      if (alterFortschritt !== aufgabe.fortschritt) {
+        timelineEintragHinzufuegen(
+          aufgabe,
+          "Fortschritt geändert",
+          `Von ${alterFortschritt} % auf ${aufgabe.fortschritt} %.`
+        );
+      }
 
       if (aufgabe.fortschritt === 100 && aufgabe.status !== "archiv") {
         aufgabe.status = "fertig";
@@ -479,7 +500,16 @@ function verschiebeButtonErstellen(text, aufgabenId, neuerStatus) {
   button.addEventListener("click", function () {
     aufgaben.forEach(function (aufgabe) {
       if (aufgabe.id === aufgabenId) {
+        const alterStatus = aufgabe.status;
         aufgabe.status = neuerStatus;
+
+        if (alterStatus !== neuerStatus) {
+          timelineEintragHinzufuegen(
+            aufgabe,
+            "Status geändert",
+            `${statusTexte[alterStatus]} → ${statusTexte[neuerStatus]}`
+          );
+        }
 
         if (neuerStatus === "arbeit" && aufgabe.fortschritt === 0) {
           aufgabe.fortschritt = 5;
@@ -841,7 +871,8 @@ function aufgabeReparieren(aufgabe) {
     workspace: aufgabe.workspace || "programmieren",
     checkliste: Array.isArray(aufgabe.checkliste) ? aufgabe.checkliste : [],
     zeitSekunden: typeof aufgabe.zeitSekunden === "number" ? aufgabe.zeitSekunden : 0,
-    zeitStart: aufgabe.zeitStart || null
+    zeitStart: aufgabe.zeitStart || null,
+    timeline: Array.isArray(aufgabe.timeline) ? aufgabe.timeline : []
   };
 
   if (typeof reparierteAufgabe.fortschritt !== "number") {
@@ -939,6 +970,7 @@ function detailFensterOeffnen(aufgabenId) {
 
   checklisteAnzeigen(aufgabe);
   zeiterfassungAnzeigen(aufgabe);
+  timelineAnzeigen(aufgabe);
   detailOverlay.classList.add("aktiv");
 }
 
@@ -970,6 +1002,7 @@ detailSpeichernButton.addEventListener("click", function () {
   }
 
   aufgabe.notiz = detailNotiz.value;
+  timelineEintragHinzufuegen(aufgabe, "Notiz gespeichert", "Die Projektnotiz wurde aktualisiert.");
 
   aufgabenSpeichern();
   detailFensterSchliessen();
@@ -1016,8 +1049,14 @@ function checklisteAnzeigen(aufgabe) {
 
     checkbox.addEventListener("click", function () {
       punkt.erledigt = !punkt.erledigt;
+      timelineEintragHinzufuegen(
+        aufgabe,
+        punkt.erledigt ? "Checklistenpunkt erledigt" : "Checklistenpunkt wieder geöffnet",
+        punkt.text
+      );
       aufgabenSpeichern();
       checklisteAnzeigen(aufgabe);
+      timelineAnzeigen(aufgabe);
     });
 
     const text = document.createElement("span");
@@ -1034,8 +1073,11 @@ function checklisteAnzeigen(aufgabe) {
         return eintrag.id !== punkt.id;
       });
 
+      timelineEintragHinzufuegen(aufgabe, "Checklistenpunkt gelöscht", punkt.text);
+
       aufgabenSpeichern();
       checklisteAnzeigen(aufgabe);
+      timelineAnzeigen(aufgabe);
     });
 
     eintrag.appendChild(checkbox);
@@ -1076,6 +1118,8 @@ checklistenFormular.addEventListener("submit", function (event) {
     text: text,
     erledigt: false
   });
+
+  timelineEintragHinzufuegen(aufgabe, "Checklistenpunkt hinzugefügt", text);
 
   checklistenEingabe.value = "";
 
@@ -1126,8 +1170,10 @@ zeitStartButton.addEventListener("click", function () {
   }
 
   aufgabe.zeitStart = new Date().toISOString();
+  timelineEintragHinzufuegen(aufgabe, "Timer gestartet", "Die Zeiterfassung wurde gestartet.");
   aufgabenSpeichern();
   zeiterfassungAnzeigen(aufgabe);
+  timelineAnzeigen(aufgabe);
 });
 
 zeitStopButton.addEventListener("click", function () {
@@ -1144,8 +1190,11 @@ zeitStopButton.addEventListener("click", function () {
   aufgabe.zeitSekunden = (aufgabe.zeitSekunden || 0) + differenzSekunden;
   aufgabe.zeitStart = null;
 
+  timelineEintragHinzufuegen(aufgabe, "Timer gestoppt", `${zeitFormatieren(differenzSekunden)} erfasst.`);
+
   aufgabenSpeichern();
   zeiterfassungAnzeigen(aufgabe);
+  timelineAnzeigen(aufgabe);
 });
 
 zeitZuruecksetzenButton.addEventListener("click", function () {
@@ -1164,8 +1213,11 @@ zeitZuruecksetzenButton.addEventListener("click", function () {
   aufgabe.zeitSekunden = 0;
   aufgabe.zeitStart = null;
 
+  timelineEintragHinzufuegen(aufgabe, "Zeit zurückgesetzt", "Die gespeicherte Arbeitszeit wurde gelöscht.");
+
   aufgabenSpeichern();
   zeiterfassungAnzeigen(aufgabe);
+  timelineAnzeigen(aufgabe);
 });
 
 function gesamteZeitSekundenBerechnen(aufgabe) {
@@ -1194,4 +1246,60 @@ function zeitFormatieren(sekundenGesamt) {
   }
 
   return `${sekunden} Sek.`;
+}
+
+
+function timelineEintragHinzufuegen(aufgabe, titel, beschreibung) {
+  if (!Array.isArray(aufgabe.timeline)) {
+    aufgabe.timeline = [];
+  }
+
+  aufgabe.timeline.unshift({
+    id: neueIdErstellen(),
+    titel: titel,
+    beschreibung: beschreibung,
+    datum: new Date().toLocaleString("de-DE")
+  });
+
+  if (aufgabe.timeline.length > 30) {
+    aufgabe.timeline = aufgabe.timeline.slice(0, 30);
+  }
+}
+
+function timelineAnzeigen(aufgabe) {
+  timelineListe.innerHTML = "";
+
+  if (!Array.isArray(aufgabe.timeline)) {
+    aufgabe.timeline = [];
+  }
+
+  detailTimelineAnzahl.textContent = `${aufgabe.timeline.length} Ereignisse`;
+
+  if (aufgabe.timeline.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("timeline-leer");
+    leer.textContent = "Noch keine Ereignisse vorhanden.";
+    timelineListe.appendChild(leer);
+    return;
+  }
+
+  aufgabe.timeline.forEach(function (eintrag) {
+    const element = document.createElement("div");
+    element.classList.add("timeline-eintrag");
+
+    const titel = document.createElement("strong");
+    titel.textContent = eintrag.titel;
+
+    const beschreibung = document.createElement("span");
+    beschreibung.textContent = eintrag.beschreibung;
+
+    const datum = document.createElement("span");
+    datum.textContent = eintrag.datum;
+
+    element.appendChild(titel);
+    element.appendChild(beschreibung);
+    element.appendChild(datum);
+
+    timelineListe.appendChild(element);
+  });
 }

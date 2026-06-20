@@ -1317,3 +1317,77 @@ h1 {
   background: rgba(251, 113, 133, 0.12);
   color: #fecdd3;
 }
+
+/* Version 18 – Projekt-Timeline */
+
+.detail-timeline-box {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.detail-timeline-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+#detailTimelineAnzahl {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.timeline-liste {
+  display: grid;
+  gap: 7px;
+  max-height: 220px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.timeline-eintrag {
+  position: relative;
+  padding: 9px 9px 9px 28px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.timeline-eintrag::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 13px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #22d3ee;
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.35);
+}
+
+.timeline-eintrag strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.timeline-eintrag span {
+  display: block;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.timeline-leer {
+  padding: 9px;
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.22);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 800;
+}
