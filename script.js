@@ -131,6 +131,9 @@ const projektStatAbgeschlossen = document.querySelector("#projektStatAbgeschloss
 const projektStatAktiv = document.querySelector("#projektStatAktiv");
 const projektStatArchiv = document.querySelector("#projektStatArchiv");
 
+const kompaktModus = document.querySelector("#kompaktModus");
+const kompaktModusSpeicherName = "miniProjektboardKompaktModus";
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -1052,6 +1055,7 @@ function neueIdErstellen() {
 aktivenWorkspaceLaden();
 aktivitaetenLaden();
 aufgabenLaden();
+kompaktModusLaden();
 workspaceAnzeigeAktualisieren();
 dragUndDropEinrichten();
 boardAnzeigen();
@@ -2458,3 +2462,27 @@ function projektStatistikenAktualisieren() {
   projektStatAktiv.textContent = aktiv;
   projektStatArchiv.textContent = archiv;
 }
+
+
+function kompaktModusLaden() {
+  const gespeichert = localStorage.getItem(kompaktModusSpeicherName);
+
+  if (gespeichert === "aktiv") {
+    kompaktModus.checked = true;
+    document.body.classList.add("kompakt-aktiv");
+  }
+}
+
+kompaktModus.addEventListener("change", function () {
+  if (kompaktModus.checked) {
+    document.body.classList.add("kompakt-aktiv");
+    localStorage.setItem(kompaktModusSpeicherName, "aktiv");
+    aktivitaetHinzufuegen("Kompaktmodus aktiviert", "Die Board-Ansicht wurde verdichtet.");
+  } else {
+    document.body.classList.remove("kompakt-aktiv");
+    localStorage.setItem(kompaktModusSpeicherName, "inaktiv");
+    aktivitaetHinzufuegen("Kompaktmodus deaktiviert", "Die normale Board-Ansicht wurde wiederhergestellt.");
+  }
+
+  aktivitaetenAnzeigen();
+});
