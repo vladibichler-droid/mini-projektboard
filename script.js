@@ -24,6 +24,14 @@ const archivUebersicht = document.querySelector("#archivUebersicht");
 const fortschrittUebersicht = document.querySelector("#fortschrittUebersicht");
 const fortschrittUebersichtBalken = document.querySelector("#fortschrittUebersichtBalken");
 
+const analyseAlle = document.querySelector("#analyseAlle");
+const analyseWorkspace = document.querySelector("#analyseWorkspace");
+const analyseFavoriten = document.querySelector("#analyseFavoriten");
+const analyseAktivsterWorkspace = document.querySelector("#analyseAktivsterWorkspace");
+const analyseProduktivitaet = document.querySelector("#analyseProduktivitaet");
+const analyseStatus = document.querySelector("#analyseStatus");
+const analyseBalken = document.querySelector("#analyseBalken");
+
 const speicherName = "miniProjektboardAufgabenV12";
 const aktiverWorkspaceSpeicherName = "miniProjektboardAktiverWorkspace";
 
@@ -187,6 +195,7 @@ function boardAnzeigen() {
 
   leereSpaltenPruefen();
   zaehlerAktualisieren(sichtbareAufgaben);
+  analyseDashboardAktualisieren();
 }
 
 function gefilterteAufgabenErmitteln() {
@@ -505,6 +514,69 @@ function zaehlerAktualisieren(sichtbareAufgaben) {
 
   fortschrittUebersicht.textContent = `${durchschnitt} %`;
   fortschrittUebersichtBalken.style.width = `${durchschnitt}%`;
+}
+
+function analyseDashboardAktualisieren() {
+  const alleAnzahl = aufgaben.length;
+
+  const workspaceAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace;
+  });
+
+  const workspaceAnzahl = workspaceAufgaben.length;
+
+  const favoritenAnzahl = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.favorit;
+  }).length;
+
+  const produktivitaet = durchschnittlichenFortschrittBerechnen(workspaceAufgaben);
+  const aktivsterWorkspace = aktivstenWorkspaceErmitteln();
+
+  analyseAlle.textContent = alleAnzahl;
+  analyseWorkspace.textContent = workspaceAnzahl;
+  analyseFavoriten.textContent = favoritenAnzahl;
+  analyseAktivsterWorkspace.textContent = aktivsterWorkspace;
+  analyseProduktivitaet.textContent = `${produktivitaet} %`;
+  analyseBalken.style.width = `${produktivitaet}%`;
+  analyseStatus.textContent = produktivitaetsTextErmitteln(produktivitaet, workspaceAnzahl);
+}
+
+function aktivstenWorkspaceErmitteln() {
+  let besterWorkspace = "–";
+  let hoechsteAnzahl = 0;
+
+  Object.keys(workspaces).forEach(function (workspaceKey) {
+    const anzahl = aufgaben.filter(function (aufgabe) {
+      return aufgabe.workspace === workspaceKey;
+    }).length;
+
+    if (anzahl > hoechsteAnzahl) {
+      hoechsteAnzahl = anzahl;
+      besterWorkspace = workspaces[workspaceKey];
+    }
+  });
+
+  return besterWorkspace;
+}
+
+function produktivitaetsTextErmitteln(prozent, anzahl) {
+  if (anzahl === 0) {
+    return "Noch leer";
+  }
+
+  if (prozent >= 80) {
+    return "Sehr stark";
+  }
+
+  if (prozent >= 50) {
+    return "Guter Fortschritt";
+  }
+
+  if (prozent > 0) {
+    return "In Bewegung";
+  }
+
+  return "Startbereit";
 }
 
 function durchschnittlichenFortschrittBerechnen(aufgabenListe) {
