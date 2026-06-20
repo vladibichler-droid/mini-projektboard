@@ -2761,3 +2761,91 @@ body.kompakt-aktiv .karten-aktionen button {
     grid-template-columns: 1fr;
   }
 }
+
+/* Version 37 – Fortschritt als Ringdiagramm */
+
+.ring-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.ring-kopf {
+  margin-bottom: 10px;
+}
+
+.ring-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.ring-kopf strong {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.ring-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.ring-karte {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.ring-karte > span {
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.ringdiagramm {
+  width: 86px;
+  height: 86px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background:
+    conic-gradient(#22d3ee 0deg, rgba(15, 23, 42, 0.85) 0deg);
+  position: relative;
+}
+
+.ringdiagramm::after {
+  content: "";
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.ringdiagramm span {
+  position: relative;
+  z-index: 1;
+  color: #f8fafc;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+@media (max-width: 700px) {
+  .ring-grid {
+    grid-template-columns: 1fr;
+  }
+}

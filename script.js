@@ -134,6 +134,13 @@ const projektStatArchiv = document.querySelector("#projektStatArchiv");
 const kompaktModus = document.querySelector("#kompaktModus");
 const kompaktModusSpeicherName = "miniProjektboardKompaktModus";
 
+const ringDurchschnitt = document.querySelector("#ringDurchschnitt");
+const ringDurchschnittText = document.querySelector("#ringDurchschnittText");
+const ringFertig = document.querySelector("#ringFertig");
+const ringFertigText = document.querySelector("#ringFertigText");
+const ringOffen = document.querySelector("#ringOffen");
+const ringOffenText = document.querySelector("#ringOffenText");
+
 let detailProjektId = null;
 let timerIntervall = null;
 
@@ -283,6 +290,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   wochenplanAnzeigen();
   miniStatistikenAktualisieren();
   projektStatistikenAktualisieren();
+  ringdiagrammeAktualisieren();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -298,6 +306,7 @@ kalenderHeuteButton.addEventListener("click", function () {
   wochenplanAnzeigen();
   miniStatistikenAktualisieren();
   projektStatistikenAktualisieren();
+  ringdiagrammeAktualisieren();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
@@ -312,6 +321,7 @@ kalenderWeiterButton.addEventListener("click", function () {
   wochenplanAnzeigen();
   miniStatistikenAktualisieren();
   projektStatistikenAktualisieren();
+  ringdiagrammeAktualisieren();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1840,6 +1850,7 @@ aktivitaetLeerenButton.addEventListener("click", function () {
   wochenplanAnzeigen();
   miniStatistikenAktualisieren();
   projektStatistikenAktualisieren();
+  ringdiagrammeAktualisieren();
 });
 
 
@@ -2486,3 +2497,36 @@ kompaktModus.addEventListener("change", function () {
 
   aktivitaetenAnzeigen();
 });
+
+
+function ringdiagrammeAktualisieren() {
+  const workspaceAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace;
+  });
+
+  const gesamt = workspaceAufgaben.length || 1;
+
+  const durchschnitt = durchschnittlichenFortschrittBerechnen(workspaceAufgaben);
+
+  const fertig = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "fertig";
+  }).length;
+
+  const offen = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "offen";
+  }).length;
+
+  const fertigProzent = Math.round((fertig / gesamt) * 100);
+  const offenProzent = Math.round((offen / gesamt) * 100);
+
+  ringSetzen(ringDurchschnitt, ringDurchschnittText, durchschnitt);
+  ringSetzen(ringFertig, ringFertigText, fertigProzent);
+  ringSetzen(ringOffen, ringOffenText, offenProzent);
+}
+
+function ringSetzen(element, textElement, prozent) {
+  const grad = Math.round((prozent / 100) * 360);
+
+  element.style.background = `conic-gradient(#22d3ee ${grad}deg, rgba(15, 23, 42, 0.85) ${grad}deg)`;
+  textElement.textContent = `${prozent} %`;
+}
