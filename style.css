@@ -3296,3 +3296,69 @@ body.kompakt-aktiv .karten-aktionen button {
     grid-template-columns: 1fr;
   }
 }
+
+/* Version 42 – Persönliche Coding-Statistik */
+
+.codingstatistik-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.codingstatistik-kopf {
+  margin-bottom: 10px;
+}
+
+.codingstatistik-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.codingstatistik-kopf strong {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.codingstatistik-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.codingstatistik-karte {
+  padding: 10px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.codingstatistik-karte span {
+  display: block;
+  margin-bottom: 6px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.codingstatistik-karte strong {
+  display: block;
+  color: #f8fafc;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+@media (max-width: 850px) {
+  .codingstatistik-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

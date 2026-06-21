@@ -168,6 +168,11 @@ const roadmapHinzufuegen = document.querySelector("#roadmapHinzufuegen");
 const roadmapListe = document.querySelector("#roadmapListe");
 const roadmapSpeicherName = "miniProjektboardRoadmap";
 
+const codingStatProjekte = document.querySelector("#codingStatProjekte");
+const codingStatFertig = document.querySelector("#codingStatFertig");
+const codingStatZeit = document.querySelector("#codingStatZeit");
+const codingStatProduktivitaet = document.querySelector("#codingStatProduktivitaet");
+
 let ressourcen = [];
 let roadmapEintraege = [];
 let budgetDaten = {
@@ -325,6 +330,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   miniStatistikenAktualisieren();
   projektStatistikenAktualisieren();
   ringdiagrammeAktualisieren();
+  codingStatistikAktualisieren();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -341,6 +347,7 @@ kalenderHeuteButton.addEventListener("click", function () {
   miniStatistikenAktualisieren();
   projektStatistikenAktualisieren();
   ringdiagrammeAktualisieren();
+  codingStatistikAktualisieren();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
@@ -356,6 +363,7 @@ kalenderWeiterButton.addEventListener("click", function () {
   miniStatistikenAktualisieren();
   projektStatistikenAktualisieren();
   ringdiagrammeAktualisieren();
+  codingStatistikAktualisieren();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1892,6 +1900,7 @@ aktivitaetLeerenButton.addEventListener("click", function () {
   miniStatistikenAktualisieren();
   projektStatistikenAktualisieren();
   ringdiagrammeAktualisieren();
+  codingStatistikAktualisieren();
 });
 
 
@@ -2832,4 +2841,27 @@ roadmapHinzufuegen.addEventListener("click", function () {
 
 function roadmapTextFormatieren(text) {
   return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+
+function codingStatistikAktualisieren() {
+  const workspaceAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace;
+  });
+
+  const fertig = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "fertig";
+  }).length;
+
+  const zeitSekunden = workspaceAufgaben.reduce(function (gesamt, aufgabe) {
+    return gesamt + gesamteZeitSekundenBerechnen(aufgabe);
+  }, 0);
+
+  const stunden = Math.round((zeitSekunden / 3600) * 10) / 10;
+  const produktivitaet = durchschnittlichenFortschrittBerechnen(workspaceAufgaben);
+
+  codingStatProjekte.textContent = workspaceAufgaben.length;
+  codingStatFertig.textContent = fertig;
+  codingStatZeit.textContent = `${stunden} Std.`;
+  codingStatProduktivitaet.textContent = `${produktivitaet} %`;
 }
