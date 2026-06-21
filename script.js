@@ -175,6 +175,13 @@ const codingStatProduktivitaet = document.querySelector("#codingStatProduktivita
 
 const vorlageButtons = document.querySelectorAll(".vorlage-button");
 
+const gesamtFortschrittRing = document.querySelector("#gesamtFortschrittRing");
+const gesamtFortschrittText = document.querySelector("#gesamtFortschrittText");
+const gesamtFortschrittProjekte = document.querySelector("#gesamtFortschrittProjekte");
+const gesamtFortschrittAktiv = document.querySelector("#gesamtFortschrittAktiv");
+const gesamtFortschrittFertig = document.querySelector("#gesamtFortschrittFertig");
+const gesamtFortschrittArchiv = document.querySelector("#gesamtFortschrittArchiv");
+
 let ressourcen = [];
 let roadmapEintraege = [];
 let budgetDaten = {
@@ -333,6 +340,7 @@ kalenderZurueckButton.addEventListener("click", function () {
   projektStatistikenAktualisieren();
   ringdiagrammeAktualisieren();
   codingStatistikAktualisieren();
+  gesamtFortschrittAktualisieren();
 });
 
 kalenderHeuteButton.addEventListener("click", function () {
@@ -350,6 +358,7 @@ kalenderHeuteButton.addEventListener("click", function () {
   projektStatistikenAktualisieren();
   ringdiagrammeAktualisieren();
   codingStatistikAktualisieren();
+  gesamtFortschrittAktualisieren();
 });
 
 kalenderWeiterButton.addEventListener("click", function () {
@@ -366,6 +375,7 @@ kalenderWeiterButton.addEventListener("click", function () {
   projektStatistikenAktualisieren();
   ringdiagrammeAktualisieren();
   codingStatistikAktualisieren();
+  gesamtFortschrittAktualisieren();
 });
 
 function workspaceAnzeigeAktualisieren() {
@@ -1903,6 +1913,7 @@ aktivitaetLeerenButton.addEventListener("click", function () {
   projektStatistikenAktualisieren();
   ringdiagrammeAktualisieren();
   codingStatistikAktualisieren();
+  gesamtFortschrittAktualisieren();
 });
 
 
@@ -2909,4 +2920,35 @@ function projektAusVorlageErstellen(vorlage) {
   );
 
   aktivitaetenAnzeigen();
+}
+
+
+function gesamtFortschrittAktualisieren() {
+  const workspaceAufgaben = aufgaben.filter(function (aufgabe) {
+    return aufgabe.workspace === aktiverWorkspace;
+  });
+
+  const durchschnitt = durchschnittlichenFortschrittBerechnen(workspaceAufgaben);
+  const grad = Math.round((durchschnitt / 100) * 360);
+
+  const aktiv = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status !== "archiv";
+  }).length;
+
+  const fertig = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "fertig";
+  }).length;
+
+  const archiv = workspaceAufgaben.filter(function (aufgabe) {
+    return aufgabe.status === "archiv";
+  }).length;
+
+  gesamtFortschrittRing.style.background =
+    `conic-gradient(#22d3ee ${grad}deg, rgba(15, 23, 42, 0.85) ${grad}deg)`;
+
+  gesamtFortschrittText.textContent = `${durchschnitt} %`;
+  gesamtFortschrittProjekte.textContent = workspaceAufgaben.length;
+  gesamtFortschrittAktiv.textContent = aktiv;
+  gesamtFortschrittFertig.textContent = fertig;
+  gesamtFortschrittArchiv.textContent = archiv;
 }

@@ -3424,3 +3424,108 @@ body.kompakt-aktiv .karten-aktionen button {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Version 44 – Große Fortschrittsübersicht */
+
+.gesamtfortschritt-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.gesamtfortschritt-kopf {
+  margin-bottom: 12px;
+}
+
+.gesamtfortschritt-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.gesamtfortschritt-kopf strong {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.gesamtfortschritt-layout {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.gesamtfortschritt-ring {
+  width: 150px;
+  height: 150px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(#22d3ee 0deg, rgba(15, 23, 42, 0.85) 0deg);
+  position: relative;
+  margin: 0 auto;
+}
+
+.gesamtfortschritt-ring::after {
+  content: "";
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.gesamtfortschritt-ring span {
+  position: relative;
+  z-index: 1;
+  color: #f8fafc;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.gesamtfortschritt-info {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.gesamtfortschritt-info div {
+  padding: 10px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.48);
+  border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.gesamtfortschritt-info span {
+  display: block;
+  margin-bottom: 6px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.gesamtfortschritt-info strong {
+  display: block;
+  color: #f8fafc;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+@media (max-width: 900px) {
+  .gesamtfortschritt-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gesamtfortschritt-info {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
