@@ -161,7 +161,15 @@ const stundenGeplantEingabe = document.querySelector("#stundenGeplantEingabe");
 const budgetSpeichernButton = document.querySelector("#budgetSpeichernButton");
 const budgetSpeicherName = "miniProjektboardBudget";
 
+const roadmapTitel = document.querySelector("#roadmapTitel");
+const roadmapStatus = document.querySelector("#roadmapStatus");
+const roadmapPrioritaet = document.querySelector("#roadmapPrioritaet");
+const roadmapHinzufuegen = document.querySelector("#roadmapHinzufuegen");
+const roadmapListe = document.querySelector("#roadmapListe");
+const roadmapSpeicherName = "miniProjektboardRoadmap";
+
 let ressourcen = [];
+let roadmapEintraege = [];
 let budgetDaten = {
   geplant: 0,
   verbraucht: 0,
@@ -1096,6 +1104,8 @@ ressourcenLaden();
 ressourcenAnzeigen();
 budgetLaden();
 budgetAnzeigen();
+roadmapLaden();
+roadmapAnzeigen();
 kompaktModusLaden();
 workspaceAnzeigeAktualisieren();
 dragUndDropEinrichten();
@@ -2718,3 +2728,108 @@ budgetSpeichernButton.addEventListener("click", function () {
   aktivitaetHinzufuegen("Budget gespeichert", "Budget- und Stundenwerte wurden aktualisiert.");
   aktivitaetenAnzeigen();
 });
+
+
+function roadmapLaden() {
+  const gespeicherteRoadmap = localStorage.getItem(roadmapSpeicherName);
+
+  if (gespeicherteRoadmap === null) {
+    roadmapEintraege = [];
+    return;
+  }
+
+  roadmapEintraege = JSON.parse(gespeicherteRoadmap);
+}
+
+function roadmapSpeichern() {
+  localStorage.setItem(roadmapSpeicherName, JSON.stringify(roadmapEintraege));
+}
+
+function roadmapAnzeigen() {
+  roadmapListe.innerHTML = "";
+
+  if (roadmapEintraege.length === 0) {
+    const leer = document.createElement("div");
+    leer.classList.add("roadmap-leer");
+    leer.textContent = "Noch keine Roadmap-Einträge vorhanden.";
+    roadmapListe.appendChild(leer);
+    return;
+  }
+
+  roadmapEintraege.forEach(function (eintrag) {
+    const element = document.createElement("div");
+    element.classList.add("roadmap-eintrag");
+
+    const info = document.createElement("div");
+
+    const titel = document.createElement("strong");
+    titel.textContent = eintrag.titel;
+
+    const meta = document.createElement("div");
+    meta.classList.add("roadmap-meta");
+
+    const statusChip = document.createElement("span");
+    statusChip.classList.add("roadmap-chip");
+    statusChip.textContent = roadmapTextFormatieren(eintrag.status);
+
+    const prioritaetChip = document.createElement("span");
+    prioritaetChip.classList.add("roadmap-chip");
+    prioritaetChip.classList.add(eintrag.prioritaet);
+    prioritaetChip.textContent = roadmapTextFormatieren(eintrag.prioritaet);
+
+    const loeschen = document.createElement("button");
+    loeschen.type = "button";
+    loeschen.classList.add("roadmap-loeschen");
+    loeschen.textContent = "Löschen";
+
+    loeschen.addEventListener("click", function () {
+      roadmapEintraege = roadmapEintraege.filter(function (item) {
+        return item.id !== eintrag.id;
+      });
+
+      roadmapSpeichern();
+      roadmapAnzeigen();
+
+      aktivitaetHinzufuegen("Roadmap-Eintrag gelöscht", eintrag.titel);
+      aktivitaetenAnzeigen();
+    });
+
+    meta.appendChild(statusChip);
+    meta.appendChild(prioritaetChip);
+
+    info.appendChild(titel);
+    info.appendChild(meta);
+
+    element.appendChild(info);
+    element.appendChild(loeschen);
+
+    roadmapListe.appendChild(element);
+  });
+}
+
+roadmapHinzufuegen.addEventListener("click", function () {
+  const titel = roadmapTitel.value.trim();
+
+  if (titel === "") {
+    return;
+  }
+
+  roadmapEintraege.push({
+    id: neueIdErstellen(),
+    titel: titel,
+    status: roadmapStatus.value,
+    prioritaet: roadmapPrioritaet.value
+  });
+
+  roadmapTitel.value = "";
+
+  roadmapSpeichern();
+  roadmapAnzeigen();
+
+  aktivitaetHinzufuegen("Roadmap-Eintrag hinzugefügt", titel);
+  aktivitaetenAnzeigen();
+});
+
+function roadmapTextFormatieren(text) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}

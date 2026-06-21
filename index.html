@@ -169,6 +169,39 @@
 
 
 
+
+      <section class="roadmap-dashboard">
+        <div class="roadmap-kopf">
+          <div>
+            <span class="roadmap-label">Roadmap</span>
+            <strong>Geplante Funktionen</strong>
+          </div>
+        </div>
+
+        <div class="roadmap-form">
+          <input type="text" id="roadmapTitel" placeholder="Neue Roadmap-Idee ...">
+
+          <select id="roadmapStatus">
+            <option value="geplant">Geplant</option>
+            <option value="arbeit">In Arbeit</option>
+            <option value="erledigt">Erledigt</option>
+          </select>
+
+          <select id="roadmapPrioritaet">
+            <option value="niedrig">Niedrig</option>
+            <option value="mittel">Mittel</option>
+            <option value="hoch">Hoch</option>
+          </select>
+
+          <button type="button" id="roadmapHinzufuegen">
+            Hinzufügen
+          </button>
+        </div>
+
+        <div class="roadmap-liste" id="roadmapListe"></div>
+      </section>
+
+
       <section class="budget-dashboard">
         <div class="budget-kopf">
           <div>
@@ -811,7 +844,7 @@
     </section>
 
     <footer class="abschluss-box">
-      <p>Version 40 · Budget-Tracking integriert</p>
+      <p>Version 41 · Roadmap integriert</p>
     </footer>
 
   </main>
