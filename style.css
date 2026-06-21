@@ -3362,3 +3362,65 @@ body.kompakt-aktiv .karten-aktionen button {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Version 43 – Vorlagenbibliothek */
+
+.vorlagen-dashboard {
+  max-width: 1180px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.68), rgba(15, 23, 42, 0.66));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
+.vorlagen-kopf {
+  margin-bottom: 10px;
+}
+
+.vorlagen-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.vorlagen-kopf strong {
+  display: block;
+  color: #dbeafe;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.vorlagen-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.vorlage-button {
+  min-height: 54px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 16px;
+  padding: 10px;
+  background: rgba(15, 23, 42, 0.48);
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.vorlage-button:hover {
+  background: rgba(96, 165, 250, 0.16);
+  border-color: rgba(96, 165, 250, 0.3);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 850px) {
+  .vorlagen-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

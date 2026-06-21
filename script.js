@@ -173,6 +173,8 @@ const codingStatFertig = document.querySelector("#codingStatFertig");
 const codingStatZeit = document.querySelector("#codingStatZeit");
 const codingStatProduktivitaet = document.querySelector("#codingStatProduktivitaet");
 
+const vorlageButtons = document.querySelectorAll(".vorlage-button");
+
 let ressourcen = [];
 let roadmapEintraege = [];
 let budgetDaten = {
@@ -2864,4 +2866,47 @@ function codingStatistikAktualisieren() {
   codingStatFertig.textContent = fertig;
   codingStatZeit.textContent = `${stunden} Std.`;
   codingStatProduktivitaet.textContent = `${produktivitaet} %`;
+}
+
+
+vorlageButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    projektAusVorlageErstellen(button.dataset.vorlage);
+  });
+});
+
+function projektAusVorlageErstellen(vorlage) {
+  const namen = {
+    web: "Neue Website",
+    app: "Neue App",
+    lernen: "Neues Lernprojekt",
+    github: "Neue GitHub-Aufgabe"
+  };
+
+  const neuesProjekt = {
+    id: neueIdErstellen(),
+    text: namen[vorlage] || "Neue Vorlage",
+    status: "offen",
+    fortschritt: 0,
+    workspace: aktiverWorkspace,
+    erstelltAm: heutigesDatumErstellen(),
+    notiz: "",
+    checkliste: [],
+    meilensteine: [],
+    links: [],
+    team: [],
+    tags: []
+  };
+
+  aufgaben.unshift(neuesProjekt);
+
+  aufgabenSpeichern();
+  boardAnzeigen();
+
+  aktivitaetHinzufuegen(
+    "Projekt aus Vorlage erstellt",
+    neuesProjekt.text
+  );
+
+  aktivitaetenAnzeigen();
 }
